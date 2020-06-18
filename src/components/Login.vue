@@ -21,6 +21,7 @@
           >密码登录</el-button
           >
         </el-form-item>
+
         <!--验证码登录-->
         <!--手机号-->
         <el-form-item prop="phoneNumber" v-if="table1show">
@@ -54,6 +55,7 @@
             type="success"
             plain
             v-if="isDisabled"
+            disabled
           >{{ content }}</el-button
           >
         </el-form-item>
@@ -79,12 +81,13 @@
         </el-form-item>
 
         <el-form-item class="el_form_item_rem">
-          <el-button size="small" round>忘记密码?</el-button>
+          <el-button size="small" round>忘记密码/立即注册</el-button>
+          <el-button size="small" round @click="resetLoginFrom">重置</el-button>
         </el-form-item>
+
         <!--按钮-->
         <el-form-item class="login_button">
-          <el-button type="primary" round @click="userLogin">登录</el-button>
-          <el-button type="info" round @click="resetLoginFrom">重置</el-button>
+          <el-button class="login_menu" type="primary" round @click="userLogin">登录</el-button>
         </el-form-item>
         <el-form-item>
           社交账号登录
@@ -212,8 +215,11 @@ export default {
       }
       // 发送验证码
       setVfCode(this.loginInfo).then(data => {
-        this.isDisabled = false
-        if (data.code === '200') {
+        if (data.code === 200) {
+          this.$message({
+            message: data.msg,
+            type: 'success'
+          })
           // 控制倒计时及按钮是否可以点击
           const TIME_COUNT = 60
           this.count = TIME_COUNT
@@ -235,11 +241,6 @@ export default {
               this.timer = null
             }
           }, 1000)
-
-          this.$message({
-            message: data.msg,
-            type: 'success'
-          })
         } else {
           this.$message({
             message: data.msg,
@@ -332,8 +333,7 @@ export default {
       margin-left: 35px;
     }
     .login_button {
-      display: flex;
-      justify-content: flex-end;
+      text-align: center;
     }
     .other_login {
       margin-left: 10px;
@@ -363,6 +363,14 @@ export default {
     text-align: center;
   }
   .el_form_item_rem {
-    text-align: left;
+    text-align: right;
+    button {
+      background: none;
+      border: none;
+    }
+
+  }
+  .login_menu {
+    width: 370px;
   }
 </style>
