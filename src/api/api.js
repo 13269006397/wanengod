@@ -6,6 +6,7 @@ import qs from 'qs'
 // axios.defaults.baseURL = "http://localhost:9005";
 // 每次请求携带cookies信息
 axios.defaults.withCredentials = true
+axios.defaults.headers['Content-Type'] = 'application/json'
 
 // 声明一个调用方法
 export const requestLogin = params => {
@@ -15,8 +16,8 @@ export const requestLogin = params => {
 export const setVfCode = params => {
   return axios
     .post(
-      'http://localhost:9005/user/login/findSetVFCode',
-      qs.stringify(params)
+      '/api/user/login/findSetVFCode',
+      JSON.stringify(params)
     )
     .then(res => res.data)
 }
