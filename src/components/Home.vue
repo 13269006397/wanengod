@@ -66,16 +66,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button
-          @click.native="
-            (dialogVisible = false),
-              (addFormData = { cId: '', cUsername: '', cPwd: '' })
-          "
-          >取 消</el-button
-        >
-        <el-button v-if="isView" type="primary" @click.native="addSubmit"
-          >确 定</el-button
-        >
+        <el-button>取 消</el-button>
+        <el-button v-if="isView" type="primary" @click.native="addSubmit">确 定</el-button>
       </span>
     </el-dialog>
   </div>
