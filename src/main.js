@@ -6,6 +6,8 @@ import './plugins/element.js'
 import ElementUI from 'element-ui'
 // 导入全局样式表
 import './assets/css/blobal.css'
+// 引入阿里icon图标
+import './assets/icon/iconfont.css'
 import axios from 'axios'
 // 必须使用才能生效
 Vue.use(ElementUI)

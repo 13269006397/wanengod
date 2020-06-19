@@ -73,16 +73,18 @@
         <!--密码-->
         <el-form-item prop="password" v-if="table2show">
           <el-input
+            type="password"
             v-model="loginInfo.password"
-            maxlength="11"
+            maxlength="21"
             prefix-icon="el-icon-lock"
           >
           </el-input>
         </el-form-item>
 
         <el-form-item class="el_form_item_rem">
-          <el-button size="small" round>忘记密码/立即注册</el-button>
-          <el-button size="small" round @click="resetLoginFrom">重置</el-button>
+          <el-checkbox v-model="passwordType" size="mini">保持登录</el-checkbox>
+          <el-button size="medium" round @click="dialogVisible=true">忘记密码/立即注册</el-button>
+          <el-button size="medium" round @click="resetLoginFrom">重置</el-button>
         </el-form-item>
 
         <!--按钮-->
@@ -122,7 +124,7 @@
           alt=""
           src="https://pic3.zhimg.com/80/v2-d0289dc0a46fc5b15b3363ffa78cf6c7.png"
         />
-        京公网安备 11010802010035 号 ·
+        京公网安备 11010802010012 号 ·
       </a>
       <a href="https://zhstatic.zhihu.com/assets/zhihu/publish-license.jpg">
         出版物经营许可证
@@ -134,6 +136,42 @@
         违法和不良信息举报：010-82716601</span
       >
     </div>
+
+    <!--新增界面-->
+    <el-dialog
+      title="用户注册"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        :model="addLoginInfo"
+        :rules="loginRules"
+        ref="loginFormRef"
+        label-width="0px"
+      >
+        <el-form-item prop="phoneNumber">
+          <el-input
+            type="text"
+            v-model="addLoginInfo.phoneNumber"
+            auto-complete="off"
+            placeholder="手机号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            type="password"
+            v-model="addLoginInfo.password"
+            auto-complete="off"
+            placeholder="密码"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="medium" type="info" @click="closedialogVisible" round>取消</el-button>
+          <el-button size="medium" type="success" round>确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -146,15 +184,22 @@ export default {
   name: 'login',
   data () {
     return {
+      passwordType: '',
       table1show: true,
       table2show: false,
       isDisabled: false, // 控制按钮是否可以点击（false:可以点击，true:不可点击）
+      dialogVisible: false, // 注册页面
       content: '获取短信验证码', // 发送验证码按钮的初始显示文字
       timer: null,
       count: '',
       model: {},
       LoginLoading: false,
       loginInfo: {
+        phoneNumber: '',
+        vfCode: '',
+        password: ''
+      },
+      addLoginInfo: {
         phoneNumber: '',
         vfCode: '',
         password: ''
@@ -186,12 +231,17 @@ export default {
             message: '请输入密码',
             trigger: 'blur'
           },
-          { min: 6, max: 20, message: '请输入正确的密码', trigger: 'blur' }
+          { min: 8, max: 21, message: '请输入正确的密码', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    // 关闭用户申请框
+    closedialogVisible () {
+      this.dialogVisible = false
+      this.resetLoginFrom()
+    },
     // 登录方式切换
     changeVFLogin () {
       this.table1show = true
@@ -242,9 +292,15 @@ export default {
             }
           }, 1000)
         } else {
-          this.$message({
-            message: data.msg,
-            type: 'error'
+          this.$confirm('当前手机号未注册 是否注册?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // 打开注册页面
+            this.dialogVisible = true
+          }).catch(() => {
+            // 不作任何操作
           })
         }
       })
@@ -260,7 +316,7 @@ export default {
           this.LoginLoading = true
           // 调用函数  传递参数 获取结果
           requestLogin(this.loginInfo).then(data => {
-            if (data.code === '200') {
+            if (data.code === 200) {
               this.LoginLoading = false
               // 登录成功
               sessionStorage.setItem('access-token', data.token)
@@ -363,7 +419,7 @@ export default {
     text-align: center;
   }
   .el_form_item_rem {
-    text-align: right;
+    text-align: left;
     button {
       background: none;
       border: none;
@@ -371,6 +427,6 @@ export default {
 
   }
   .login_menu {
-    width: 370px;
+    width: 350px;
   }
 </style>

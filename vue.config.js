@@ -32,14 +32,15 @@ module.exports = {
     },
     /* 跨域代理 */
     proxy: {
-      '/api': {
+      /* 用户模块代理 */
+      '/api-user': {
         /* 目标代理服务器地址 */
         target: 'http://localhost:9005/',
         /* 允许跨域 */
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api-user': ''
         }
       }
     }
