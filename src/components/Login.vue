@@ -147,15 +147,26 @@
       <el-form
         :model="addLoginInfo"
         :rules="loginRules"
-        ref="loginFormRef"
+        ref="AddFormRef"
         label-width="0px"
+        v-loading="AddLoading"
       >
+        <el-form-item prop="nickName">
+          <el-input
+            type="text"
+            v-model="addLoginInfo.nickName"
+            auto-complete="off"
+            placeholder="用户名"
+            maxlength="20"
+          ></el-input>
+        </el-form-item>
         <el-form-item prop="phoneNumber">
           <el-input
             type="text"
             v-model="addLoginInfo.phoneNumber"
             auto-complete="off"
             placeholder="手机号"
+            maxlength="11"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -164,11 +175,12 @@
             v-model="addLoginInfo.password"
             auto-complete="off"
             placeholder="密码"
+            maxlength="21"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="add_button">
           <el-button size="medium" type="info" @click="closedialogVisible" round>取消</el-button>
-          <el-button size="medium" type="success" round>确定</el-button>
+          <el-button size="medium" type="success" round @click="addUser">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -178,12 +190,13 @@
 <script>
 
 // 引入api.js  好调用里面的接口
-import { requestLogin, setVfCode } from '../api/api'
+import { requestLogin, setVfCode, addUser } from '../api/api'
 
 export default {
   name: 'login',
   data () {
     return {
+      AddLoading: false,
       passwordType: '',
       table1show: true,
       table2show: false,
@@ -201,10 +214,17 @@ export default {
       },
       addLoginInfo: {
         phoneNumber: '',
+        nickName: '',
         vfCode: '',
         password: ''
       },
       loginRules: {
+        nickName: [{
+          required: true,
+          message: '请输入用户名',
+          trigger: 'blur'
+        }
+        ],
         phoneNumber: [
           {
             required: true,
@@ -237,23 +257,24 @@ export default {
     }
   },
   methods: {
-    // 关闭用户申请框
+    // 关闭用户注册框
     closedialogVisible () {
-      this.resetLoginFrom()
+      this.resetAddFrom()
       this.dialogVisible = false
     },
     // 登录方式切换
     changeVFLogin () {
+      this.resetLoginFrom()
       this.table1show = true
       this.table2show = false
-      this.resetLoginFrom()
     },
+    // 登录方式切换
     changPwdLogin () {
+      this.resetLoginFrom()
       this.table1show = false
       this.table2show = true
-      this.resetLoginFrom()
     },
-    // 发送验证码
+    // 登录发送验证码
     sendVfCode () {
       // 校验手机号
       if (!/^1[34578]\d{9}$/.test(this.loginInfo.phoneNumber)) {
@@ -305,10 +326,15 @@ export default {
         }
       })
     },
-    // 重置表单
+    // 重置登陆表单
     resetLoginFrom () {
       this.$refs.loginFormRef.resetFields()
     },
+    // 重置用户注册表单
+    resetAddFrom () {
+      this.$refs.AddFormRef.resetFields()
+    },
+    // 用户登录
     userLogin () {
       this.$refs.loginFormRef.validate(valid => {
         if (valid) {
@@ -333,6 +359,32 @@ export default {
           })
         } else {
           return false
+        }
+      })
+    },
+    // 用户注册
+    addUser () {
+      this.$refs.AddFormRef.validate(valid => {
+        if (valid) {
+          // 如果验证通过 提交
+          this.AddLoading = true
+          // 调用方法
+          addUser(this.addLoginInfo).then(data => {
+            if (data.code === 200) {
+              this.AddLoading = false
+              this.dialogVisible = false
+              this.$message({
+                message: data.msg,
+                type: 'success'
+              })
+            } else {
+              this.AddLoading = false
+              this.$message({
+                message: data.msg,
+                type: 'error'
+              })
+            }
+          })
         }
       })
     }
@@ -429,5 +481,8 @@ export default {
   }
   .login_menu {
     width: 350px;
+  }
+  .add_button {
+    margin-left: 60%;
   }
 </style>

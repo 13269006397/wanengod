@@ -13,8 +13,16 @@ export const requestLogin = params => {
     .then(res => res.data)
 }
 
+// 发送登录短信验证码
 export const setVfCode = params => {
   return axios
     .post('/api-user/user/login/findSetVFCode', JSON.stringify(params))
+    .then(res => res.data)
+}
+
+// 新增用户 用户注册
+export const addUser = params => {
+  return axios
+    .post('/api-user/user/login/addUser', JSON.stringify(params))
     .then(res => res.data)
 }

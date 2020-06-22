@@ -12,6 +12,9 @@
         <el-form-item>
           <el-button type="info" @click="addUser">新增</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="info" @click="logout">退出</el-button>
+        </el-form-item>
       </el-form>
     </el-col>
 
@@ -116,6 +119,11 @@ export default {
   },
 
   methods: {
+    // 退出登录
+    logout () {
+      sessionStorage.clear()
+      this.$router.push('/login')
+    },
     loadData () {
       const param = { filter: this.filters.name }
       axios.post('/user/userlist', qs.stringify(param)).then(result => {
