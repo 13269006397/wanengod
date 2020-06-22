@@ -239,8 +239,8 @@ export default {
   methods: {
     // 关闭用户申请框
     closedialogVisible () {
-      this.dialogVisible = false
       this.resetLoginFrom()
+      this.dialogVisible = false
     },
     // 登录方式切换
     changeVFLogin () {
