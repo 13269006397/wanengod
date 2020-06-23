@@ -345,6 +345,10 @@ export default {
           requestLogin(this.loginInfo).then(data => {
             if (data.code === 200) {
               this.LoginLoading = false
+              this.$message({
+                message: data.msg,
+                type: 'success'
+              })
               // 登录成功 将token保存
               sessionStorage.setItem('access-token', data.data.token)
               // 用vue路由跳转到后台主界面

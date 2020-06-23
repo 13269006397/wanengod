@@ -161,7 +161,10 @@
         </el-menu>
       </el-aside>
       <!--右侧主体区-->
-      <el-main>Main</el-main>
+      <el-main>
+        <!--路由占位符-->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
