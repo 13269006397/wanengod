@@ -24,3 +24,10 @@ export const addUser = params => {
     .post('/api-user/user/login/addUser', JSON.stringify(params))
     .then(res => res.data)
 }
+
+// 根据id查用户
+export const findUserById = params => {
+  return axios
+    .post('/api-user/user/findUserById', JSON.stringify(params))
+    .then(res => res.data)
+}

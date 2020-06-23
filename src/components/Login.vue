@@ -345,11 +345,17 @@ export default {
           requestLogin(this.loginInfo).then(data => {
             if (data.code === 200) {
               this.LoginLoading = false
-              console.log(data.data.token)
               // 登录成功 将token保存
               sessionStorage.setItem('access-token', data.data.token)
               // 用vue路由跳转到后台主界面
-              this.$router.push({ path: '/home' })
+              this.$router.push(
+                {
+                  path: '/home',
+                  query: {
+                    userId: data.data.userId
+                  }
+                }
+              )
             } else {
               this.LoginLoading = false
               this.$message({
