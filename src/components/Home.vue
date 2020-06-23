@@ -1,79 +1,63 @@
 <template>
-  <div>
-    <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0;">
-      <el-form :inline="true" :model="filters">
-        <el-form-item>
-          <el-input v-model="filters.name" placeholder="姓名"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" v-on:click="getUsers">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="info" @click="addUser">新增</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="info" @click="logout">退出</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
-
-    <el-table :data="userInfoList" style="width: 100%">
-      <el-table-column prop="cId" label="id" width="180"> </el-table-column>
-      <el-table-column prop="cUsername" label="名字" width="180">
-      </el-table-column>
-      <el-table-column prop="cPwd" label="密码" width="180"> </el-table-column>
-      <!--第二步  开始进行修改和查询操作-->
-      <el-table-column label="操作" align="center" min-width="100">
-        <template slot-scope="scope">
-          <el-button type="text" @click="checkDetail(scope.row)"
-            >查看详情</el-button
-          >
-
-          <el-button type="info" @click="modifyUser(scope.row)">修改</el-button>
-
-          <el-button type="info" @click="deleteUser(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-      <!--编辑与增加的页面-->
-    </el-table>
-    <!--新增界面-->
-    <el-dialog
-      title="记录"
-      :visible.sync="dialogVisible"
-      width="50%"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="addFormData"
-        :rules="rules2"
-        ref="addFormData"
-        label-width="0px"
-        class="demo-ruleForm login-container"
-      >
-        <el-form-item prop="cUsername">
-          <el-input
-            type="text"
-            v-model="addFormData.cUsername"
-            auto-complete="off"
-            placeholder="账号"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="cPwd">
-          <el-input
-            type="password"
-            v-model="addFormData.cPwd"
-            auto-complete="off"
-            placeholder="密码"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button v-if="isView" type="primary" @click.native="addSubmit">确 定</el-button>
-      </span>
-    </el-dialog>
-  </div>
+  <el-container class="home-container">
+    <!--头部区-->
+    <el-header>
+      <div class="home-header">
+        <img src="../assets/image/home-logo.png" alt="">
+        <span class="home-header-span">欣酋科技 · 猫wer网</span>
+      </div>
+      <el-button type="info" @click="logout">退出</el-button>
+    </el-header>
+    <!--页面主题区-->
+    <el-container>
+      <!--侧边栏-->
+      <el-aside width="200px">
+        <el-menu
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b">
+          <!--一级菜单-->
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>用户管理</span>
+            </template>
+            <!--二级菜单-->
+              <el-menu-item index="1-1">
+                <template slot="title">
+                  <i class="el-icon-s-custom"></i>
+                  <span>用户管理</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="1-2">
+                <template slot="title">
+                  <i class="el-icon-s-check"></i>
+                  <span>角色管理</span>
+                </template>
+              </el-menu-item>
+          </el-submenu>
+          <el-menu-item index="2">
+            <i class="el-icon-menu"></i>
+            <span slot="title">待办任务</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <i class="el-icon-document"></i>
+            <span slot="title">业务查询</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <span slot="title">驾驶舱</span>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <i class="el-icon-apple"></i>
+            <span slot="title">系统设置</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <!--右侧主体区-->
+      <el-main>Main</el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
@@ -212,7 +196,31 @@ export default {
 </script>
 
 <style>
-body {
-  background: #dfe9fb;
-}
+  .el-header{
+    background: url("../assets/image/home-header-bg.jpg") repeat;
+    background-size: cover;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: black;
+    font-size: 20px;
+  }
+
+  .el-aside{
+    background: #969896;
+  }
+  .el-main{
+    background: #dfe9fb;
+  }
+  .home-container{
+    height: 100%;
+  }
+  .home-header{
+    display: flex;
+    align-items: center;
+  }
+  .home-header-span{
+    margin-left: 8px;
+  }
 </style>

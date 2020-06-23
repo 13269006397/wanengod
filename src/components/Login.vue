@@ -76,6 +76,7 @@
             type="password"
             v-model="loginInfo.password"
             maxlength="21"
+            @keyup.enter.native="userLogin('loginInfo')"
             prefix-icon="el-icon-lock"
           >
           </el-input>
