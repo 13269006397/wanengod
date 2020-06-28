@@ -251,7 +251,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
   .el-header{
     background: url("../assets/image/home-header-bg.jpg") repeat;
     background-size: cover;

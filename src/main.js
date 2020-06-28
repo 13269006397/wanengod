@@ -9,6 +9,9 @@ import './assets/css/blobal.css'
 // 引入阿里icon图标
 import './assets/icon/iconfont.css'
 import axios from 'axios'
+//  引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 // 请求头增加Token数据 调后台接口做对比
 axios.interceptors.request.use(config => {
