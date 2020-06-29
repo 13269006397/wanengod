@@ -235,7 +235,7 @@ export default {
       this.isCollapse = !this.isCollapse
     },
     getParams () {
-      this.loginInfo.id = this.$route.query.userId
+      this.loginInfo.id = localStorage.getItem('userId')
       findUserById(this.loginInfo).then(data => {
         if (data.code === 200) {
           this.userInfo = data.data.user
@@ -245,6 +245,7 @@ export default {
     },
     // 退出登录
     logout () {
+      localStorage.removeItem('token')
       sessionStorage.clear()
       this.$router.push('/login')
     }

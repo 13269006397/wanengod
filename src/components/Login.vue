@@ -350,14 +350,13 @@ export default {
                 type: 'success'
               })
               // 登录成功 将token保存
-              sessionStorage.setItem('access-token', data.data.token)
+              localStorage.setItem('token', data.data.token)
+              // 保存用户信息
+              localStorage.setItem('userId', data.data.id)
               // 用vue路由跳转到后台主界面
               this.$router.push(
                 {
-                  path: '/home',
-                  query: {
-                    userId: data.data.userId
-                  }
+                  path: '/home'
                 }
               )
             } else {
