@@ -119,7 +119,7 @@ export default {
       // 绘制图表
       myChart.setOption({
         // 当前插件的背景图
-        backgroundColor: '#DFE9FB',
+        backgroundColor: '#dfe9fb',
         title: {
           text: '登录方式',
           left: 'center',
