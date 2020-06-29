@@ -101,8 +101,9 @@
           text-color="#fff"
           active-text-color="#ffd04b"
           :collapse="isCollapse"
-          :collapse-transition = "false">
-          <el-menu-item index="1">
+          :collapse-transition = "false"
+          router>
+          <el-menu-item index="/welcome">
             <i class="el-icon-truck"></i>
             <span slot="title">驾驶机舱</span>
           </el-menu-item>
@@ -138,13 +139,13 @@
           </el-menu-item>
 
           <!--一级菜单-->
-          <el-submenu index="5" v-if="this.userInfo.permission === '01'">
+          <el-submenu>
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
             <!--二级菜单-->
-            <el-menu-item index="1-1">
+            <el-menu-item index="/userManager">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>
                 <span>用户管理</span>
