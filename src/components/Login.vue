@@ -353,6 +353,8 @@ export default {
               localStorage.setItem('token', data.data.token)
               // 保存用户信息
               localStorage.setItem('userId', data.data.id)
+              // 保存权限信息
+              localStorage.setItem('permission', data.data.permission)
               // 用vue路由跳转到后台主界面
               this.$router.push(
                 {

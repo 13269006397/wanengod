@@ -31,3 +31,10 @@ export const findUserById = params => {
     .post('/api-user/user/findUserById', JSON.stringify(params))
     .then(res => res.data)
 }
+
+// 查询用户列表
+export const findUserList = params => {
+  return axios
+    .post('/api-user/user/findUserList', JSON.stringify(params))
+    .then(res => res.data)
+}

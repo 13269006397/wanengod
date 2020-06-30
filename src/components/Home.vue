@@ -7,7 +7,10 @@
         <span class="home-header-span">欣酋科技 · 猫wer网</span>
       </div>
 
-      <el-menu :default-active="activeIndex" class="el-menu-home" mode="horizontal">
+      <el-menu :default-active="activeIndex"
+               class="el-menu-home"
+               mode="horizontal"
+               active-text-color="#ffd04b">
 
         <!--一级菜单-->
         <el-submenu index="1">
@@ -21,13 +24,13 @@
               <span>关于我的</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="2-2">
+          <el-menu-item index="1-2">
             <template slot="title">
               <i class="el-icon-s-check"></i>
               <span>订单管理</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="3-2" @click="logout">
+          <el-menu-item index="1-3" @click="logout">
             <template slot="title">
               <i class="el-icon-s-check"></i>
               <span>退出</span>
@@ -59,7 +62,7 @@
               </el-badge>
             </template>
           </el-menu-item>
-          <el-menu-item index="2-2">
+          <el-menu-item index="2-3">
             <template slot="title">
               <i class="el-icon-s-check"></i>
               <el-badge :value="this.msg_five" class="item">
@@ -108,24 +111,24 @@
             <span slot="title">驾驶机舱</span>
           </el-menu-item>
 
-          <el-menu-item index="2">
+          <el-menu-item index="4">
             <i class="el-icon-menu"></i>
             <span slot="title">欣酋论坛</span>
           </el-menu-item>
 
-          <el-submenu index="3">
+          <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>交易管理</span>
             </template>
             <!--二级菜单-->
-            <el-menu-item index="3-1">
+            <el-menu-item index="5-1">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>
                 <span>订单管理</span>
               </template>
             </el-menu-item>
-            <el-menu-item index="3-2">
+            <el-menu-item index="5-2">
               <template slot="title">
                 <i class="el-icon-s-check"></i>
                 <span>订单查询</span>
@@ -133,13 +136,8 @@
             </el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="4">
-            <i class="el-icon-apple"></i>
-            <span slot="title">系统设置</span>
-          </el-menu-item>
-
           <!--一级菜单-->
-          <el-submenu>
+          <el-submenu index="6" v-if="this.permission === '01'">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
@@ -148,10 +146,10 @@
             <el-menu-item index="/userManager">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>
-                <span>用户管理</span>
+                <span>用户列表</span>
               </template>
             </el-menu-item>
-            <el-menu-item index="1-2">
+            <el-menu-item index="6-2">
               <template slot="title">
                 <i class="el-icon-s-check"></i>
                 <span>权限管理</span>
@@ -176,6 +174,7 @@ export default {
   name: 'home',
   data () {
     return {
+      permission: '',
       isCollapse: false,
       msg_five: 11,
       msg_good: 8,
@@ -224,6 +223,7 @@ export default {
     }
   },
   created () {
+    this.permission = localStorage.getItem('permission')
     this.getParams()
   },
   mounted: function () {
@@ -239,14 +239,12 @@ export default {
       findUserById(this.loginInfo).then(data => {
         if (data.code === 200) {
           this.userInfo = data.data.user
-          console.log(this.userInfo)
         }
       })
     },
     // 退出登录
     logout () {
-      localStorage.removeItem('token')
-      sessionStorage.clear()
+      localStorage.clear()
       this.$router.push('/login')
     }
   }
