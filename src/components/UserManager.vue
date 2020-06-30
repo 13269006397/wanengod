@@ -103,12 +103,12 @@
             width="150">
             <template slot-scope="scope">
               <el-switch
-                disabled
                 v-model="scope.row.isDelete"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
                 active-value="01"
-                inactive-value="02">
+                inactive-value="02"
+                @change="userStatusChange(scope.row)">
               </el-switch>
             </template>
           </el-table-column>
@@ -125,6 +125,17 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <!--分页-->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="requestParams.page"
+          :page-sizes="[1, 5, 10, 20]"
+          :page-size="requestParams.limit"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="this.total">
+        </el-pagination>
       </el-card>
     </div>
 </template>
@@ -137,7 +148,7 @@ export default {
     return {
       ListLoading: false,
       list: [],
-      total: '',
+      total: undefined,
       requestParams: {
         mobile: '',
         nickName: '',
@@ -159,6 +170,20 @@ export default {
     this.getUserList()
   },
   methods: {
+    // 监听 用户状态的改变
+    userStatusChange (userInfo) {
+      console.log(userInfo)
+    },
+    // 监听page size (limit)改变事件
+    handleSizeChange (newSize) {
+      this.requestParams.limit = newSize
+      this.getUserList()
+    },
+    // 页码值 发生改变事件
+    handleCurrentChange (newPage) {
+      this.requestParams.page = newPage
+      this.getUserList()
+    },
     // 获取用户列表
     getUserList () {
       this.ListLoading = true

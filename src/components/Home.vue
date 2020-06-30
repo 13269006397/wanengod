@@ -4,9 +4,10 @@
     <el-header>
       <div class="home-header">
         <img src="../assets/image/home-logo.png" alt="">
-        <span class="home-header-span">欣酋科技 · 猫wer网</span>
+        <span class="home-header-span">欣酋科技 · 万物互联网</span>
       </div>
 
+      <!--头部右侧菜单-->
       <el-menu :default-active="activeIndex"
                class="el-menu-home"
                mode="horizontal"
@@ -15,13 +16,20 @@
         <!--一级菜单-->
         <el-submenu index="1">
           <template slot="title">
-            <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            <el-image
+              style="width: 47px; height: 47px; border-radius: 50%;"
+              :src="this.userInfo.avatar"
+              fit="contain">
+            </el-image>
           </template>
+          <div style="height: 50px; margin-top: 20px; margin-left: 50px">
+            <span style="font-size: 20px; ">{{this.userInfo.nickName}}</span>
+          </div>
           <!--二级菜单-->
           <el-menu-item index="1-1">
             <template slot="title">
               <i class="el-icon-s-custom"></i>
-              <span>关于我的</span>
+              <span>个人资料</span>
             </template>
           </el-menu-item>
           <el-menu-item index="1-2">
@@ -30,7 +38,7 @@
               <span>订单管理</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="1-3" @click="logout">
+          <el-menu-item index="1-3" @click="centerDialogVisible = true">
             <template slot="title">
               <i class="el-icon-s-check"></i>
               <span>退出</span>
@@ -41,7 +49,7 @@
         <!--一级菜单-->
         <el-submenu index="2">
           <template slot="title">
-            <el-badge :value="this.msg_five + this.msg_reply + this.msg_good" class="item">
+            <el-badge :value="this.msg_five + this.msg_reply + this.msg_good">
               <span>消息中心</span>
             </el-badge>
           </template>
@@ -49,7 +57,7 @@
           <el-menu-item index="2-1">
             <template slot="title">
               <i class="el-icon-s-custom"></i>
-              <el-badge :value="msg_good" class="item">
+              <el-badge :value="msg_good" type="primary">
                 <span>点赞</span>
               </el-badge>
             </template>
@@ -57,7 +65,7 @@
           <el-menu-item index="2-2">
             <template slot="title">
               <i class="el-icon-s-check"></i>
-              <el-badge :value="this.msg_reply" class="item">
+              <el-badge :value="this.msg_reply">
                 <span>回复</span>
               </el-badge>
             </template>
@@ -65,7 +73,7 @@
           <el-menu-item index="2-3">
             <template slot="title">
               <i class="el-icon-s-check"></i>
-              <el-badge :value="this.msg_five" class="item">
+              <el-badge :value="this.msg_five" type="warning">
                 <span>评论</span>
               </el-badge>
             </template>
@@ -87,12 +95,13 @@
           <el-menu-item index="3-2">
             <template slot="title">
               <i class="el-icon-s-check"></i>
-              <span>角色管理</span>
+              <span>菜单管理</span>
             </template>
           </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-header>
+
     <!--页面主题区-->
     <el-container>
       <!--侧边栏-->
@@ -119,7 +128,7 @@
           <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>交易管理</span>
+              <span>互联工具</span>
             </template>
             <!--二级菜单-->
             <el-menu-item index="5-1">
@@ -146,25 +155,39 @@
             <el-menu-item index="/userManager">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>
-                <span>用户列表</span>
+                <span>用户管理</span>
               </template>
             </el-menu-item>
             <el-menu-item index="6-2">
               <template slot="title">
                 <i class="el-icon-s-check"></i>
-                <span>权限管理</span>
+                <span>菜单管理</span>
               </template>
             </el-menu-item>
           </el-submenu>
 
         </el-menu>
       </el-aside>
+
       <!--右侧主体区-->
       <el-main>
         <!--路由占位符-->
         <router-view></router-view>
       </el-main>
     </el-container>
+
+    <!--提醒框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center>
+      <span>是否确认退出?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="logout">确 定</el-button>
+        </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -174,6 +197,7 @@ export default {
   name: 'home',
   data () {
     return {
+      centerDialogVisible: false,
       permission: '',
       isCollapse: false,
       msg_five: 11,
@@ -244,8 +268,10 @@ export default {
     },
     // 退出登录
     logout () {
-      localStorage.clear()
+      this.centerDialogVisible = false
       this.$router.push('/login')
+      // 清除token数据
+      localStorage.clear()
     }
   }
 }
