@@ -11,21 +11,37 @@
       <el-card>
         <!--栅格系统写头部区-->
         <el-row :gutter="10">
+          <!--搜索与添加-->
           <el-col :span="3">
-            <!--搜索与添加-->
-            <el-input placeholder="手机号"></el-input>
+            <el-input v-model="requestParams.mobile" placeholder="手机号"></el-input>
           </el-col>
           <el-col :span="3">
-            <el-input placeholder="姓名"></el-input>
+            <el-input v-model="requestParams.nickName" placeholder="姓名"></el-input>
           </el-col>
           <el-col :span="3">
-            <el-input placeholder="用户分类"></el-input>
+            <el-select v-model="requestParams.isDelete" clearable placeholder="用户状态">
+              <el-option
+                v-for="item in userStatus"
+                :key="item.label"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" plain>搜索</el-button>
           </el-col>
-          <el-col :span="2">
-            <el-button type="primary" icon="el-icon-circle-plus-outline">添加用户</el-button>
+          <el-col :span="1.5">
+            <el-button type="info" icon="el-icon-refresh-left" @click="restRequestParams" plain>重置</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="success" icon="el-icon-circle-plus-outline" plain>添加</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="danger" icon="el-icon-top" plain>导入</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="warning" icon="el-icon-bottom" plain>导出</el-button>
           </el-col>
         </el-row>
 
@@ -154,7 +170,8 @@ export default {
         nickName: '',
         permission: '',
         page: 0,
-        limit: 10
+        limit: 10,
+        isDelete: ''
       },
       userInfo: {
         id: '',
@@ -163,18 +180,28 @@ export default {
         nickName: '',
         permission: '',
         isDelete: ''
-      }
+      },
+      userStatus: [{
+        value: '01',
+        label: '正常'
+      }, {
+        value: '02',
+        label: '冻结'
+      }]
     }
   },
   created () {
     this.getUserList()
   },
   methods: {
+    // 重置搜索数据
+    restRequestParams () {
+      this.requestParams = ''
+    },
     // 监听 用户状态的改变
     userStatusChange (userInfo) {
       this.userInfo.id = userInfo.id
       this.userInfo.isDelete = userInfo.isDelete
-      console.log(this.userInfo)
       // 改变用户当前状态
       updateUserStatus(this.userInfo).then(response => {
         this.ListLoading = true
@@ -222,6 +249,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style lang="less" scoped>
