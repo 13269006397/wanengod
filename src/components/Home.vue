@@ -19,7 +19,7 @@
             <el-image
               style="width: 47px; height: 47px; border-radius: 50%;"
               :src="this.userInfo.avatar"
-              fit="contain">
+              fit="fill">
             </el-image>
           </template>
           <div style="height: 50px; margin-top: 20px; margin-left: 50px">

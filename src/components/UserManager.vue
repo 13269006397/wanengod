@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { findUserList } from '../api/api'
+import { findUserList, updateUserStatus } from '../api/api'
 export default {
   name: 'UserManager',
   data () {
@@ -172,7 +172,26 @@ export default {
   methods: {
     // 监听 用户状态的改变
     userStatusChange (userInfo) {
-      console.log(userInfo)
+      this.userInfo.id = userInfo.id
+      this.userInfo.isDelete = userInfo.isDelete
+      console.log(this.userInfo)
+      // 改变用户当前状态
+      updateUserStatus(this.userInfo).then(response => {
+        this.ListLoading = true
+        if (response.code === 200) {
+          this.ListLoading = false
+          this.$message({
+            message: response.msg,
+            type: 'success'
+          })
+        } else {
+          this.ListLoading = false
+          this.$message({
+            message: response.msg,
+            type: 'error'
+          })
+        }
+      })
     },
     // 监听page size (limit)改变事件
     handleSizeChange (newSize) {
