@@ -83,7 +83,7 @@
         </el-form-item>
 
         <el-form-item class="el_form_item_rem">
-          <el-checkbox v-model="passwordType" size="mini">保持登录</el-checkbox>
+          <el-checkbox v-model="checked" size="mini">记住账号</el-checkbox>
           <el-button size="medium" round @click="dialogVisible=true">忘记密码/立即注册</el-button>
           <el-button size="medium" round @click="resetLoginFrom">重置</el-button>
         </el-form-item>
@@ -198,7 +198,7 @@ export default {
   data () {
     return {
       AddLoading: false,
-      passwordType: '',
+      checked: true,
       table1show: true,
       table2show: false,
       isDisabled: false, // 控制按钮是否可以点击（false:可以点击，true:不可点击）
@@ -257,7 +257,51 @@ export default {
       }
     }
   },
+  mounted () {
+    this.getCookie()
+  },
   methods: {
+    // 记住用户
+    rememberUser () {
+      console.log(this.checked)
+      // 判断复选框是否被勾选 勾选则调用配置cookie方法
+      if (this.checked === true) {
+        // 传入账号名，密码，和保存天数三个参数
+        this.setCookie(this.loginInfo.phoneNumber, this.loginInfo.password, 7)
+      } else {
+        // 清空Cookie
+        this.clearCookie()
+      }
+    },
+    // 设置cookie
+    setCookie (phoneNumber, password, remeberTime) {
+      const exdate = new Date() // 获取时间
+      exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * remeberTime) // 保存的天数
+      // 字符串拼接cookie
+      window.document.cookie =
+        'phoneNumber' + '=' + phoneNumber + ';path=/;expires=' + exdate.toGMTString()
+      window.document.cookie =
+        'password' + '=' + password + ';path=/;expires=' + exdate.toGMTString()
+    },
+    // 读取cookie
+    getCookie: function () {
+      if (document.cookie.length > 0) {
+        const arr = document.cookie.split('; ') // 这里显示的格式需要切割一下自己可输出看下
+        for (let i = 0; i < arr.length; i++) {
+          const arr2 = arr[i].split('=') // 再次切割
+          // 判断查找相对应的值
+          if (arr2[0] === 'phoneNumber') {
+            this.loginInfo.phoneNumber = arr2[1] // 保存到保存数据的地方
+          } else if (arr2[0] === 'password') {
+            this.loginInfo.password = arr2[1]
+          }
+        }
+      }
+    },
+    // 清除cookie
+    clearCookie: function () {
+      this.setCookie('', '', -1) // 修改两个值都为空，天数为-1天就好了
+    },
     // 关闭用户注册框
     closedialogVisible () {
       this.resetAddFrom()
@@ -265,13 +309,13 @@ export default {
     },
     // 登录方式切换
     changeVFLogin () {
-      this.resetLoginFrom()
+      // this.resetLoginFrom()
       this.table1show = true
       this.table2show = false
     },
     // 登录方式切换
     changPwdLogin () {
-      this.resetLoginFrom()
+      // this.resetLoginFrom()
       this.table1show = false
       this.table2show = true
     },
@@ -344,6 +388,8 @@ export default {
           // 调用函数  传递参数 获取结果
           requestLogin(this.loginInfo).then(data => {
             if (data.code === 200) {
+              // 记住用户
+              this.rememberUser()
               this.LoginLoading = false
               this.$message({
                 message: data.msg,
