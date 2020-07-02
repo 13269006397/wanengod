@@ -71,9 +71,11 @@
             width="120">
           </el-table-column>
           <el-table-column
-            prop="sex"
             label="性别"
             width="120">
+            <template slot-scope="scope">
+              {{ scope.row.sex | sexFilter }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="birthday"
@@ -116,9 +118,11 @@
             width="190">
           </el-table-column>
           <el-table-column
-            prop="permission"
             label="角色"
             width="150">
+            <template slot-scope="scope">
+              {{ scope.row.permission | permissionFilter }}
+            </template>
           </el-table-column>
           <el-table-column
             label="状态"
@@ -169,12 +173,12 @@
             <el-row>
               <el-col :span="11">
                 <el-form-item label="手机号" prop="mobile">
-                  <el-input v-model="userModel.mobile"></el-input>
+                  <el-input v-model="userModel.mobile" maxlength="11"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
                 <el-form-item label="姓名">
-                  <el-input v-model="userModel.nickName" maxlength="10" autocomplete="off" show-password></el-input>
+                  <el-input v-model="userModel.nickName" maxlength="10" autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -233,6 +237,13 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
+                <el-form-item label="个性">
+                  <el-input v-model="userModel.personality" maxlength="20" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
                 <el-form-item label="兴趣爱好">
                   <el-input v-model="userModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
                 </el-form-item>
@@ -252,6 +263,36 @@
 import { findUserList, updateUserStatus, addUser } from '../api/api'
 export default {
   name: 'UserManager',
+  filters: {
+    sexFilter (value) {
+      if (value) {
+        if (value === '01') {
+          value = '男'
+        }
+        if (value === '02') {
+          value = '女'
+        }
+        if (value === '99') {
+          value = '未知性别'
+        }
+      }
+      return value
+    },
+    permissionFilter (value) {
+      if (value) {
+        if (value === '01') {
+          value = '管理员'
+        }
+        if (value === '02') {
+          value = '普通用户'
+        }
+        if (value === '03') {
+          value = '氪金用户'
+        }
+      }
+      return value
+    }
+  },
   data () {
     const email = (rule, value, callback) => {
       const reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/

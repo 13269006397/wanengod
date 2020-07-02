@@ -50,6 +50,11 @@
     <el-form :model="userModel" status-icon ref="userModel" label-width="100px">
       <el-row>
         <el-col :span="7">
+          <el-form-item label="ID">
+            <el-input v-model="userModel.id" disabled></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
           <el-form-item label="手机号" prop="mobile">
             <el-input v-model="userModel.mobile" disabled></el-input>
           </el-form-item>
@@ -57,11 +62,6 @@
         <el-col :span="7">
           <el-form-item label="姓名">
             <el-input v-model="userModel.nickName" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="密码">
-            <el-input v-model="userModel.password" show-password></el-input>
           </el-form-item>
         </el-col>
       </el-row>
