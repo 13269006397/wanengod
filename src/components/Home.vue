@@ -39,7 +39,7 @@
               <span>订单管理</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="1-3" @click="centerDialogVisible = true">
+          <el-menu-item @click="centerDialogVisible = true">
             <template slot="title">
               <i class="el-icon-s-check"></i>
               <span>退出</span>

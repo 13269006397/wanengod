@@ -162,6 +162,7 @@
         <!--新增用户页面-->
         <el-dialog
           title="添加用户"
+          style="text-align: center"
           :visible.sync="addUserVisible"
           width="55%">
           <el-form :model="userModel" status-icon :rules="rules" ref="userModel" label-width="100px">
