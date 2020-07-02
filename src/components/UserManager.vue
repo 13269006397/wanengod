@@ -13,10 +13,10 @@
         <el-row :gutter="10">
           <!--搜索与添加-->
           <el-col :span="3">
-            <el-input v-model="requestParams.mobile" placeholder="手机号"></el-input>
+            <el-input v-model="requestParams.mobile" clearable placeholder="手机号"></el-input>
           </el-col>
           <el-col :span="3">
-            <el-input v-model="requestParams.nickName" placeholder="姓名"></el-input>
+            <el-input v-model="requestParams.nickName" clearable placeholder="姓名"></el-input>
           </el-col>
           <el-col :span="3">
             <el-select v-model="requestParams.isDelete" clearable placeholder="用户状态">
@@ -29,13 +29,13 @@
             </el-select>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-search" plain>搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="getUserList" plain>搜索</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="info" icon="el-icon-refresh-left" @click="restRequestParams" plain>重置</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="success" icon="el-icon-circle-plus-outline" plain>添加</el-button>
+            <el-button type="success" icon="el-icon-circle-plus-outline" @click="addUserVisible = true" plain>添加</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button type="danger" icon="el-icon-top" plain>导入</el-button>
@@ -47,6 +47,7 @@
 
         <!--内容区-->
         <el-table
+          v-loading="ListLoading"
           :data="list"
           border
           stripe>
@@ -58,6 +59,11 @@
             prop="nickName"
             label="姓名"
             width="120">
+          </el-table-column>
+          <el-table-column
+            prop="idNumber"
+            label="身份证号"
+            width="180">
           </el-table-column>
           <el-table-column
             prop="mobile"
@@ -152,16 +158,189 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="this.total">
         </el-pagination>
+
+        <!--新增用户页面-->
+        <el-dialog
+          title="添加用户"
+          :visible.sync="addUserVisible"
+          width="55%">
+          <el-form :model="userModel" status-icon :rules="rules" ref="userModel" label-width="100px">
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="手机号" prop="mobile">
+                  <el-input v-model="userModel.mobile"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="姓名">
+                  <el-input v-model="userModel.nickName" maxlength="10" autocomplete="off" show-password></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="密码" prop="password">
+                  <el-input type="password" v-model="userModel.password" autocomplete="off" show-password></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="确认密码" prop="checkPass">
+                  <el-input type="password" v-model="userModel.checkPass" autocomplete="off" show-password></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="年龄" prop="age">
+                  <el-input v-model="userModel.age" maxlength="2"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="身份证号" prop="idNumber">
+                  <el-input v-model="userModel.idNumber" type="text" maxlength="18" show-word-limit autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="性别">
+                  <el-select v-model="userModel.sex" clearable style="width: 100%;">
+                    <el-option
+                      v-for="item in gender"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="生日">
+                  <el-date-picker
+                    style="width: 100%;"
+                    v-model="userModel.birthday"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="userModel.email" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="兴趣爱好">
+                  <el-input v-model="userModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="addUserVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveUser">确 定</el-button>
+          </span>
+        </el-dialog>
       </el-card>
     </div>
 </template>
 
 <script>
-import { findUserList, updateUserStatus } from '../api/api'
+import { findUserList, updateUserStatus, addUser } from '../api/api'
 export default {
   name: 'UserManager',
   data () {
+    const email = (rule, value, callback) => {
+      const reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      setTimeout(() => {
+        if (value === '' || value === undefined || value === null) {
+          callback(new Error('邮箱不能为空'))
+        } else {
+          if (!reg.test(value)) {
+            callback(new Error('请输入正确的邮箱'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
+
+    const idNumber = (rule, value, callback) => {
+      const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+      setTimeout(() => {
+        if (value === '' || value === undefined || value == null) {
+          callback(new Error('身份证不能为空'))
+        } else {
+          if ((!reg.test(value)) && value !== '') {
+            callback(new Error('请输入正确的身份证号码'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
+
+    const checkMobile = (rule, value, callback) => {
+      const reg = /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/
+      setTimeout(() => {
+        if (value === '' || value === undefined || value == null) {
+          callback(new Error('手机号不能为空'))
+        } else {
+          if ((!reg.test(value)) && value !== '') {
+            callback(new Error('请输入正确的手机号码'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
+    //  数据校验附加规则
+    const checkAge = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('年龄不能为空'))
+      }
+      setTimeout(() => {
+        if (!Number(value)) {
+          callback(new Error('请输入正整数'))
+        } else {
+          const re = /^[0-9]*[1-9][0-9]*$/
+          const rsCheck = re.test(value)
+          if (!rsCheck) {
+            callback(new Error('请输入正整数'))
+          } else {
+            callback()
+          }
+        }
+      }, 0)
+    }
+    const validatePass = (rule, value, callback) => {
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('密码不能为空'))
+      } else {
+        if (this.userModel.checkPass !== '') {
+          // 调下面那个 两个密码校验
+          this.$refs.userModel.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    const validatePass2 = (rule, value, callback) => {
+      setTimeout(() => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.userModel.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }, 1000)
+    }
+
     return {
+      addUserVisible: false,
       ListLoading: false,
       list: [],
       total: undefined,
@@ -172,6 +351,22 @@ export default {
         page: 0,
         limit: 10,
         isDelete: ''
+      },
+      userModel: {
+        id: '',
+        password: '',
+        checkPass: '',
+        mobile: '',
+        avatar: '',
+        nickName: '',
+        permission: '',
+        isDelete: '',
+        age: '',
+        sex: '',
+        birthday: undefined,
+        email: '',
+        interest: '',
+        idNumber: ''
       },
       userInfo: {
         id: '',
@@ -187,16 +382,67 @@ export default {
       }, {
         value: '02',
         label: '冻结'
-      }]
+      }],
+      gender: [{
+        value: '01',
+        label: '男'
+      }, {
+        value: '02',
+        label: '女'
+      }, {
+        value: '99',
+        label: '未知'
+      }],
+      rules: {
+        password: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { validator: validatePass2, trigger: 'blur' }
+        ],
+        age: [
+          { validator: checkAge, trigger: 'blur' }
+        ],
+        mobile: [
+          { validator: checkMobile, trigger: 'blur' }
+        ],
+        idNumber: [
+          { validator: idNumber, trigger: 'blur' }
+        ],
+        email: [
+          { validator: email, trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
     this.getUserList()
   },
   methods: {
-    // 重置搜索数据
+    saveUser () {
+      // 新增用户
+      addUser(this.userModel).then(response => {
+        if (response.code === 200) {
+          this.addUserVisible = false
+          this.$message({
+            message: response.msg,
+            type: 'success'
+          })
+          this.getUserList()
+        } else {
+          this.$message({
+            message: response.msg,
+            type: 'error'
+          })
+        }
+      })
+    },
+    // 重置搜索 页面数据
     restRequestParams () {
-      this.requestParams = ''
+      this.requestParams.mobile = ''
+      this.requestParams.nickName = ''
+      this.requestParams.isDelete = ''
+      this.list = ''
     },
     // 监听 用户状态的改变
     userStatusChange (userInfo) {

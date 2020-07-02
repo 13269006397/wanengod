@@ -11,8 +11,9 @@
       <el-menu :default-active="activeIndex"
                class="el-menu-home"
                mode="horizontal"
-               active-text-color="#ffd04b">
-
+               active-text-color="#ffd04b"
+               :unique-opened="true"
+               router>
         <!--一级菜单-->
         <el-submenu index="1">
           <template slot="title">
@@ -26,7 +27,7 @@
             <span style="font-size: 20px; ">{{this.userInfo.nickName}}</span>
           </div>
           <!--二级菜单-->
-          <el-menu-item index="1-1">
+          <el-menu-item index="/selfUserInfo">
             <template slot="title">
               <i class="el-icon-s-custom"></i>
               <span>个人资料</span>

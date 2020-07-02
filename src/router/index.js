@@ -4,6 +4,7 @@ import Login from '../components/Login'
 import Home from '../components/Home'
 import Welcome from '../components/Welcome'
 import UserManager from '../components/UserManager'
+import SelfUserInfo from '../components/SelfUserInfo'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,10 @@ const routes = [
     {
       path: '/userManager',
       component: UserManager
+    },
+    {
+      path: '/selfUserInfo',
+      component: SelfUserInfo
     }
     ]
   }

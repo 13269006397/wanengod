@@ -39,7 +39,7 @@ export const findUserList = params => {
     .then(res => res.data)
 }
 
-// 查询用户列表
+// 修改用户状态
 export const updateUserStatus = params => {
   return axios
     .post('/api-user/user/updateUserStatus', JSON.stringify(params))

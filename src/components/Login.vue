@@ -24,9 +24,9 @@
 
         <!--验证码登录-->
         <!--手机号-->
-        <el-form-item prop="phoneNumber" v-if="table1show">
+        <el-form-item prop="mobile" v-if="table1show">
           <el-input
-            v-model="loginInfo.phoneNumber"
+            v-model="loginInfo.mobile"
             maxlength="11"
             prefix-icon="el-icon-mobile-phone"
           >
@@ -62,9 +62,9 @@
 
         <!--账号密码登录-->
         <!--手机号-->
-        <el-form-item prop="phoneNumber" v-if="table2show">
+        <el-form-item prop="mobile" v-if="table2show">
           <el-input
-            v-model="loginInfo.phoneNumber"
+            v-model="loginInfo.mobile"
             maxlength="11"
             prefix-icon="el-icon-mobile-phone"
           >
@@ -78,6 +78,7 @@
             maxlength="21"
             @keyup.enter.native="userLogin('loginInfo')"
             prefix-icon="el-icon-lock"
+            show-password
           >
           </el-input>
         </el-form-item>
@@ -161,10 +162,10 @@
             maxlength="20"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="phoneNumber">
+        <el-form-item prop="mobile">
           <el-input
             type="text"
-            v-model="addLoginInfo.phoneNumber"
+            v-model="addLoginInfo.mobile"
             auto-complete="off"
             placeholder="手机号"
             maxlength="11"
@@ -209,12 +210,12 @@ export default {
       model: {},
       LoginLoading: false,
       loginInfo: {
-        phoneNumber: '',
+        mobile: '',
         vfCode: '',
         password: ''
       },
       addLoginInfo: {
-        phoneNumber: '',
+        mobile: '',
         nickName: '',
         vfCode: '',
         password: ''
@@ -226,7 +227,7 @@ export default {
           trigger: 'blur'
         }
         ],
-        phoneNumber: [
+        mobile: [
           {
             required: true,
             message: '请输入手机号',
@@ -267,19 +268,19 @@ export default {
       // 判断复选框是否被勾选 勾选则调用配置cookie方法
       if (this.checked === true) {
         // 传入账号名，密码，和保存天数三个参数
-        this.setCookie(this.loginInfo.phoneNumber, this.loginInfo.password, 7)
+        this.setCookie(this.loginInfo.mobile, this.loginInfo.password, 7)
       } else {
         // 清空Cookie
         this.clearCookie()
       }
     },
     // 设置cookie
-    setCookie (phoneNumber, password, remeberTime) {
+    setCookie (mobile, password, remeberTime) {
       const exdate = new Date() // 获取时间
       exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * remeberTime) // 保存的天数
       // 字符串拼接cookie
       window.document.cookie =
-        'phoneNumber' + '=' + phoneNumber + ';path=/;expires=' + exdate.toGMTString()
+        'mobile' + '=' + mobile + ';path=/;expires=' + exdate.toGMTString()
       window.document.cookie =
         'password' + '=' + password + ';path=/;expires=' + exdate.toGMTString()
     },
@@ -290,8 +291,8 @@ export default {
         for (let i = 0; i < arr.length; i++) {
           const arr2 = arr[i].split('=') // 再次切割
           // 判断查找相对应的值
-          if (arr2[0] === 'phoneNumber') {
-            this.loginInfo.phoneNumber = arr2[1] // 保存到保存数据的地方
+          if (arr2[0] === 'mobile') {
+            this.loginInfo.mobile = arr2[1] // 保存到保存数据的地方
           } else if (arr2[0] === 'password') {
             this.loginInfo.password = arr2[1]
           }
@@ -322,7 +323,7 @@ export default {
     // 登录发送验证码
     sendVfCode () {
       // 校验手机号
-      if (!/^1[34578]\d{9}$/.test(this.loginInfo.phoneNumber)) {
+      if (!/^1[34578]\d{9}$/.test(this.loginInfo.mobile)) {
         this.$message({
           message: '请输入正确的手机号',
           type: 'warning'
