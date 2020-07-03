@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="header_userManager">
       <!--面包屑导航区-->
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -52,10 +52,12 @@
           border
           stripe>
           <el-table-column
+            fixed
             type="index"
             label="序号">
           </el-table-column>
           <el-table-column
+            fixed
             prop="nickName"
             label="姓名"
             width="120">
@@ -64,6 +66,11 @@
             prop="idNumber"
             label="身份证号"
             width="180">
+          </el-table-column>
+          <el-table-column
+            prop="age"
+            label="年龄"
+            width="120">
           </el-table-column>
           <el-table-column
             prop="mobile"
@@ -78,9 +85,11 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="birthday"
             label="出生日期"
             width="140">
+            <template slot-scope="scope">
+              {{ scope.row.birthday | formatDate }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="email"
@@ -108,14 +117,18 @@
             width="140">
           </el-table-column>
           <el-table-column
-            prop="regTime"
             label="注册日期"
             width="190">
+            <template slot-scope="scope">
+              {{ scope.row.regTime | formatAllDate }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="lastTime"
             label="最后登录日期"
             width="190">
+            <template slot-scope="scope">
+              {{ scope.row.lastTime | formatAllDate }}
+            </template>
           </el-table-column>
           <el-table-column
             label="角色"
@@ -142,8 +155,8 @@
             fixed="right"
             label="操作"
             width="180">
-            <template>
-              <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateUserView(scope.row.id)"></el-button>
               <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
               <el-tooltip content="分配角色" placement="top" :enterable="false" :open-delay="100">
                 <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
@@ -251,8 +264,101 @@
             </el-row>
           </el-form>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="addUserVisible = false">取 消</el-button>
+            <el-button @click="userCancel">取 消</el-button>
             <el-button type="primary" @click="saveUser">确 定</el-button>
+          </span>
+        </el-dialog>
+
+        <!--修改用户对话框-->
+        <el-dialog
+          title="修改用户"
+          style="text-align: center"
+          :visible.sync="updateUserVisible"
+          width="55%">
+          <el-form :model="updateUserModel" status-icon :rules="rules" ref="updateUserModel" label-width="100px">
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="手机号" prop="mobile">
+                  <el-input v-model="updateUserModel.mobile" maxlength="11" ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="姓名">
+                  <el-input v-model="updateUserModel.nickName" maxlength="10" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="密码" prop="password">
+                  <el-input type="password" v-model="updateUserModel.password" autocomplete="off" show-password></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="确认密码" prop="checkPass">
+                  <el-input type="password" v-model="updateUserModel.checkPass" autocomplete="off" show-password></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="年龄" prop="age">
+                  <el-input v-model="updateUserModel.age" maxlength="2"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="身份证号" prop="idNumber">
+                  <el-input v-model="updateUserModel.idNumber" type="text" maxlength="18" show-word-limit autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="性别">
+                  <el-select v-model="updateUserModel.sex" clearable style="width: 100%;">
+                    <el-option
+                      v-for="item in gender"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="生日">
+                  <el-date-picker
+                    style="width: 100%;"
+                    v-model="updateUserModel.birthday"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="updateUserModel.email" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="个性">
+                  <el-input v-model="updateUserModel.personality" maxlength="20" autocomplete="off"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="兴趣爱好">
+                  <el-input v-model="updateUserModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="updateUserCancel">取 消</el-button>
+            <el-button type="primary" @click="updateUser">确 定</el-button>
           </span>
         </el-dialog>
       </el-card>
@@ -260,7 +366,8 @@
 </template>
 
 <script>
-import { findUserList, updateUserStatus, addUser } from '../api/api'
+import { findUserList, updateUserStatus, addUser, findUserById } from '../api/api'
+import { formatDate } from '../utils/date'
 export default {
   name: 'UserManager',
   filters: {
@@ -291,6 +398,18 @@ export default {
         }
       }
       return value
+    },
+    formatDate (time) {
+      const date = new Date(time)
+      return formatDate(date, 'yyyy年MM月dd日') // 年月日 格式自己定义   'yyyy : MM : dd'  例 2018年12月5日的格式
+    },
+    formatDateBehind (time) {
+      const date = new Date(time)
+      return formatDate(date, 'hh:mm:ss') // 时间点 例 21点12分12秒的格式
+    },
+    formatAllDate (time) {
+      const date = new Date(time)
+      return formatDate(date, 'yyyy-MM-dd hh:mm:ss') // 年月日 格式自己定义   'yyyy : MM : dd'  例 2018年12月5日的格式
     }
   },
   data () {
@@ -382,6 +501,7 @@ export default {
     }
 
     return {
+      updateUserVisible: false,
       addUserVisible: false,
       ListLoading: false,
       list: [],
@@ -410,7 +530,31 @@ export default {
         interest: '',
         idNumber: ''
       },
+      updateUserModel: {
+        id: '',
+        password: '',
+        checkPass: '',
+        mobile: '',
+        avatar: '',
+        nickName: '',
+        permission: '',
+        isDelete: '',
+        age: '',
+        sex: '',
+        birthday: undefined,
+        email: '',
+        interest: '',
+        idNumber: ''
+      },
       userInfo: {
+        id: '',
+        mobile: '',
+        avatar: '',
+        nickName: '',
+        permission: '',
+        isDelete: ''
+      },
+      updateUserInfo: {
         id: '',
         mobile: '',
         avatar: '',
@@ -461,6 +605,46 @@ export default {
     this.getUserList()
   },
   methods: {
+    // 修改角色信息
+    updateUser () {
+      updateUserStatus(this.updateUserModel).then(response => {
+        if (response.code === 200) {
+          this.updateUserCancel()
+          this.$message({
+            message: response.msg,
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: response.msg,
+            type: 'error'
+          })
+        }
+      })
+    },
+    // 打开修改用户页面
+    updateUserView (id) {
+      this.updateUserInfo.id = id
+      // 根据id查询当前人员信息
+      findUserById(this.updateUserInfo).then(response => {
+        if (response.code === 200) {
+          this.updateUserModel = response.data.user
+          this.updateUserModel.checkPass = this.updateUserModel.password
+        }
+      })
+      this.updateUserVisible = true
+    },
+    // 关闭修改用户页面
+    updateUserCancel () {
+      this.updateUserVisible = false
+      this.updateUserModel = ''
+    },
+    // 新增用户页面关闭
+    userCancel () {
+      this.addUserVisible = false
+      this.$refs.userModel.resetFields()
+      this.userModel = ''
+    },
     saveUser () {
       // 新增用户
       addUser(this.userModel).then(response => {
