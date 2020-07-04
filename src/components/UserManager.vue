@@ -261,6 +261,24 @@
                   <el-input v-model="userModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
                 </el-form-item>
               </el-col>
+              <el-col :span="11">
+                <el-form-item label="附件">
+                  <el-upload
+                    class="upload-demo"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :before-remove="beforeRemove"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :file-list="fileList"
+                    :http-request="getFile"
+                    :limit="1"
+                    :on-exceed="handleExceed"
+                  >
+                    <el-button size="small" type="primary">选择文件</el-button>
+                  </el-upload>
+                  <el-button size="small" type="success" @click="upload">确认上传</el-button>
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -367,6 +385,7 @@
 
 <script>
 import { findUserList, updateUserStatus, addUser, findUserById } from '../api/api'
+import axios from 'axios'
 import { formatDate } from '../utils/date'
 export default {
   name: 'UserManager',
@@ -501,6 +520,9 @@ export default {
     }
 
     return {
+      fileList: [],
+      fileName: undefined,
+      files: undefined,
       updateUserVisible: false,
       addUserVisible: false,
       ListLoading: false,
@@ -605,8 +627,33 @@ export default {
     this.getUserList()
   },
   methods: {
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    },
+    handleExceed (files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    getFile (item) {
+      console.log(item.file)
+      this.file = item.file
+    },
+    upload () {
+      const fd = new FormData()
+      fd.append('filename', this.file)
+      const config = { headers: { 'Content-Type': 'multipart/form-data' } }
+      axios.post('/api-user/user/uploading', fd, config
+      ).then(response => {
+        this.$message.success(response.code)
+      })
+    },
     // 删除用户
-    deleteUser (value) {
+    deleteUser () {
       this.$message({
         message: '删除成功',
         type: 'success'
@@ -614,17 +661,21 @@ export default {
     },
     // 修改角色信息
     updateUser () {
-      updateUserStatus(this.updateUserModel).then(response => {
-        if (response.code === 200) {
-          this.updateUserCancel()
-          this.$message({
-            message: response.msg,
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: response.msg,
-            type: 'error'
+      this.$refs.updateUserModel.validate(valid => {
+        if (valid) {
+          updateUserStatus(this.updateUserModel).then(response => {
+            if (response.code === 200) {
+              this.updateUserCancel()
+              this.$message({
+                message: response.msg,
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: response.msg,
+                type: 'error'
+              })
+            }
           })
         }
       })
@@ -654,18 +705,22 @@ export default {
     },
     saveUser () {
       // 新增用户
-      addUser(this.userModel).then(response => {
-        if (response.code === 200) {
-          this.addUserVisible = false
-          this.$message({
-            message: response.msg,
-            type: 'success'
-          })
-          this.getUserList()
-        } else {
-          this.$message({
-            message: response.msg,
-            type: 'error'
+      this.$refs.userModel.validate(valid => {
+        if (valid) {
+          addUser(this.userModel).then(response => {
+            if (response.code === 200) {
+              this.addUserVisible = false
+              this.$message({
+                message: response.msg,
+                type: 'success'
+              })
+              this.getUserList()
+            } else {
+              this.$message({
+                message: response.msg,
+                type: 'error'
+              })
+            }
           })
         }
       })
