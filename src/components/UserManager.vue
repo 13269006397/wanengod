@@ -157,7 +157,7 @@
             width="180">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateUserView(scope.row.id)"></el-button>
-              <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
+              <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteUser(scope.row.id)"></el-button>
               <el-tooltip content="分配角色" placement="top" :enterable="false" :open-delay="100">
                 <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
               </el-tooltip>
@@ -605,6 +605,13 @@ export default {
     this.getUserList()
   },
   methods: {
+    // 删除用户
+    deleteUser (value) {
+      this.$message({
+        message: '删除成功',
+        type: 'success'
+      })
+    },
     // 修改角色信息
     updateUser () {
       updateUserStatus(this.updateUserModel).then(response => {
