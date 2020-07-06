@@ -45,3 +45,9 @@ export const updateUserStatus = params => {
     .post('/api-user/user/updateUserStatus', JSON.stringify(params))
     .then(res => res.data)
 }
+
+export const deletUserById = params => {
+  return axios
+    .post('/api-user/user/deleteUserById', JSON.stringify(params))
+    .then(res => res.data)
+}

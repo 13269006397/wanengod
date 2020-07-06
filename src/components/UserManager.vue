@@ -384,7 +384,7 @@
 </template>
 
 <script>
-import { findUserList, updateUserStatus, addUser, findUserById } from '../api/api'
+import { findUserList, updateUserStatus, addUser, findUserById, deletUserById } from '../api/api'
 import axios from 'axios'
 import { formatDate } from '../utils/date'
 export default {
@@ -653,10 +653,32 @@ export default {
       })
     },
     // 删除用户
-    deleteUser () {
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+    deleteUser (id) {
+      this.userInfo.id = id
+      this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletUserById(this.userInfo).then(response => {
+          if (response.code === 200) {
+            this.getUserList()
+            this.$message({
+              type: 'success',
+              message: response.msg
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: response.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     // 修改角色信息
