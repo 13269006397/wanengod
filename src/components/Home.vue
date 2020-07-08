@@ -159,10 +159,10 @@
                 <span>用户管理</span>
               </template>
             </el-menu-item>
-            <el-menu-item index="6-2">
+            <el-menu-item index="/permission">
               <template slot="title">
                 <i class="el-icon-s-check"></i>
-                <span>菜单管理</span>
+                <span>权限管理</span>
               </template>
             </el-menu-item>
           </el-submenu>

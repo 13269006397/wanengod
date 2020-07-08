@@ -5,6 +5,7 @@ import Home from '../components/Home'
 import Welcome from '../components/Welcome'
 import UserManager from '../components/UserManager'
 import SelfUserInfo from '../components/SelfUserInfo'
+import Permission from '../components/Permission'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,10 @@ const routes = [
     {
       path: '/selfUserInfo',
       component: SelfUserInfo
+    },
+    {
+      path: '/permission',
+      component: Permission
     }
     ]
   }
