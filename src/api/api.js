@@ -51,3 +51,9 @@ export const deletUserById = params => {
     .post('/api-user/user/deleteUserById', JSON.stringify(params))
     .then(res => res.data)
 }
+
+export const deleteFilesById = params => {
+  return axios
+    .post('/api-user/user/deleteFilesById', JSON.stringify(params))
+    .then(res => res.data)
+}

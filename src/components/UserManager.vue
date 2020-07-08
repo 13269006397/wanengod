@@ -49,6 +49,7 @@
         <el-table
           v-loading="ListLoading"
           :data="list"
+          ref="addUserRef"
           border
           stripe>
           <el-table-column
@@ -264,19 +265,20 @@
               <el-col :span="11">
                 <el-form-item label="附件">
                   <el-upload
+                    ref="uploadAdd"
                     class="upload-demo"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :before-remove="beforeRemove"
                     action="https://jsonplaceholder.typicode.com/posts/"
                     :file-list="fileList"
-                    :http-request="getFile"
-                    :limit="1"
+                    :http-request="uploadFileAdd"
+                    :limit="3"
+                    :auto-upload="false"
                     :on-exceed="handleExceed"
                   >
                     <el-button size="small" type="primary">选择文件</el-button>
                   </el-upload>
-                  <el-button size="small" type="success" @click="upload">确认上传</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -309,28 +311,21 @@
             <el-row>
               <el-col :span="11">
                 <el-form-item label="密码" prop="password">
-                  <el-input type="password" v-model="updateUserModel.password" autocomplete="off" show-password></el-input>
+                  <el-input type="password" v-model="updateUserModel.password" show-password></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
-                <el-form-item label="确认密码" prop="checkPass">
-                  <el-input type="password" v-model="updateUserModel.checkPass" autocomplete="off" show-password></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="11">
                 <el-form-item label="年龄" prop="age">
                   <el-input v-model="updateUserModel.age" maxlength="2"></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="11">
                 <el-form-item label="身份证号" prop="idNumber">
                   <el-input v-model="updateUserModel.idNumber" type="text" maxlength="18" show-word-limit autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="11">
                 <el-form-item label="性别">
                   <el-select v-model="updateUserModel.sex" clearable style="width: 100%;">
@@ -343,6 +338,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
+
               <el-col :span="11">
                 <el-form-item label="生日">
                   <el-date-picker
@@ -353,26 +351,25 @@
                   </el-date-picker>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="11">
                 <el-form-item label="邮箱" prop="email">
                   <el-input v-model="updateUserModel.email" autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="11">
                 <el-form-item label="个性">
                   <el-input v-model="updateUserModel.personality" maxlength="20" autocomplete="off"></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="11">
                 <el-form-item label="兴趣爱好">
                   <el-input v-model="updateUserModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
+
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="updateUserCancel">取 消</el-button>
@@ -384,7 +381,7 @@
 </template>
 
 <script>
-import { findUserList, updateUserStatus, addUser, findUserById, deletUserById } from '../api/api'
+import { findUserList, updateUserStatus, findUserById, deletUserById } from '../api/api'
 import axios from 'axios'
 import { formatDate } from '../utils/date'
 export default {
@@ -496,14 +493,11 @@ export default {
       }, 0)
     }
     const validatePass = (rule, value, callback) => {
-      console.log(value)
-      if (value === '' || value === undefined) {
-        callback(new Error('密码不能为空'))
+      if (value.length < 6) {
+        return callback(new Error('密码不能少于6位！'))
+      } else if (value.length > 16) {
+        return callback(new Error('密码最长不能超过16位！'))
       } else {
-        if (this.userModel.checkPass !== '') {
-          // 调下面那个 两个密码校验
-          this.$refs.userModel.validateField('checkPass')
-        }
         callback()
       }
     }
@@ -520,6 +514,10 @@ export default {
     }
 
     return {
+      delFiles: [],
+      fileCode: '',
+      oriFileName: '',
+      reportFileList: [],
       fileList: [],
       fileName: undefined,
       files: undefined,
@@ -528,6 +526,7 @@ export default {
       ListLoading: false,
       list: [],
       total: undefined,
+      delList: [],
       requestParams: {
         mobile: '',
         nickName: '',
@@ -582,7 +581,8 @@ export default {
         avatar: '',
         nickName: '',
         permission: '',
-        isDelete: ''
+        isDelete: '',
+        fileId: ''
       },
       userStatus: [{
         value: '01',
@@ -627,11 +627,17 @@ export default {
     this.getUserList()
   },
   methods: {
+    // 删除附件
+    deleteFile (item, index) {
+
+    },
+    // 下载附件
+    downLoad () {
+
+    },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
     },
     handlePreview (file) {
-      console.log(file)
     },
     handleExceed (files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
@@ -639,18 +645,8 @@ export default {
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
-    getFile (item) {
-      console.log(item.file)
-      this.file = item.file
-    },
-    upload () {
-      const fd = new FormData()
-      fd.append('filename', this.file)
-      const config = { headers: { 'Content-Type': 'multipart/form-data' } }
-      axios.post('/api-user/user/uploading', fd, config
-      ).then(response => {
-        this.$message.success(response.code)
-      })
+    uploadFileAdd (item) {
+      this.fileList.push(item.file)
     },
     // 删除用户
     deleteUser (id) {
@@ -684,6 +680,7 @@ export default {
     // 修改角色信息
     updateUser () {
       this.$refs.updateUserModel.validate(valid => {
+        console.log(this.updateUserModel)
         if (valid) {
           updateUserStatus(this.updateUserModel).then(response => {
             if (response.code === 200) {
@@ -708,8 +705,8 @@ export default {
       // 根据id查询当前人员信息
       findUserById(this.updateUserInfo).then(response => {
         if (response.code === 200) {
+          this.reportFileList = response.data.reportFileList
           this.updateUserModel = response.data.user
-          this.updateUserModel.checkPass = this.updateUserModel.password
         }
       })
       this.updateUserVisible = true
@@ -717,7 +714,7 @@ export default {
     // 关闭修改用户页面
     updateUserCancel () {
       this.updateUserVisible = false
-      this.updateUserModel = ''
+      this.$refs.updateUserModel.resetFields()
     },
     // 新增用户页面关闭
     userCancel () {
@@ -729,20 +726,55 @@ export default {
       // 新增用户
       this.$refs.userModel.validate(valid => {
         if (valid) {
-          addUser(this.userModel).then(response => {
-            if (response.code === 200) {
-              this.addUserVisible = false
-              this.$message({
-                message: response.msg,
-                type: 'success'
-              })
-              this.getUserList()
-            } else {
-              this.$message({
-                message: response.msg,
-                type: 'error'
-              })
-            }
+          if (this.fileList.length > 0) {
+            this.file.forEach(item => {
+              const isLt8M = item.size / 1024 / 1024 < 2
+              if (!isLt8M) {
+                this.$message.error('文件不能超过8M')
+              }
+            })
+          }
+          this.$refs.uploadAdd.submit()
+          this.beforeUploadAdd()
+        }
+      })
+    },
+    // 文件上传+ form表单数据
+    beforeUploadAdd () {
+      const requestConfig = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          userToken: localStorage.getItem('token')
+        }
+      }
+      const fd = new FormData()
+      if (this.fileList.length > 0) {
+        this.fileList.forEach(item => {
+          fd.append('files', item)
+        })
+      }
+      fd.append('mobile', this.userModel.mobile)
+      fd.append('nickName', this.userModel.nickName)
+      fd.append('password', this.userModel.password)
+      fd.append('age', this.userModel.age)
+      fd.append('idNumber', this.userModel.idNumber)
+      fd.append('sex', this.userModel.sex)
+      fd.append('birthday', this.userModel.birthday)
+      fd.append('email', this.userModel.email)
+      fd.append('personality', this.userModel.personality)
+      fd.append('interest', this.userModel.interest)
+      axios.post('/api-user/user/login/addUser', fd, requestConfig).then((response) => {
+        if (response.data.code === 200) {
+          this.addUserVisible = false
+          this.getUserList()
+          this.$message({
+            type: 'success',
+            message: response.data.msg
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: response.data.msg
           })
         }
       })
@@ -752,7 +784,7 @@ export default {
       this.requestParams.mobile = ''
       this.requestParams.nickName = ''
       this.requestParams.isDelete = ''
-      this.list = ''
+      this.list = undefined
     },
     // 监听 用户状态的改变
     userStatusChange (userInfo) {
