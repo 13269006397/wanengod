@@ -38,10 +38,10 @@
             <el-button type="success" icon="el-icon-circle-plus-outline" @click="addUserVisible = true" plain>添加</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-top" plain>导入</el-button>
+            <el-button type="danger" icon="el-icon-bottom"  plain>导入</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="warning" icon="el-icon-bottom" plain @click="downloadExcel">导出</el-button>
+            <el-button type="warning" icon="el-icon-top" plain @click="downloadExcel">导出</el-button>
           </el-col>
         </el-row>
 
@@ -685,6 +685,7 @@ export default {
           updateUserStatus(this.updateUserModel).then(response => {
             if (response.code === 200) {
               this.updateUserCancel()
+              this.getUserList()
               this.$message({
                 message: response.msg,
                 type: 'success'
@@ -835,6 +836,7 @@ export default {
         }
       })
     },
+    // 用户导出
     downloadExcel () {
       axios.post('/api-user/excel/downLoadExcel', this.requestParams, { responseType: 'blob' }).then((_res) => {
         // 将返回文件新建成为工作流
