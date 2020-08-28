@@ -121,7 +121,7 @@
             <span slot="title">驾驶机舱</span>
           </el-menu-item>
 
-          <el-menu-item index="4">
+          <el-menu-item index="/tribune">
             <i class="el-icon-menu"></i>
             <span slot="title">欣酋论坛</span>
           </el-menu-item>

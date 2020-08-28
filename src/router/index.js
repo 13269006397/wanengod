@@ -6,6 +6,7 @@ import Welcome from '../components/Welcome'
 import UserManager from '../components/UserManager'
 import SelfUserInfo from '../components/SelfUserInfo'
 import Permission from '../components/Permission'
+import Tribune from '../views/tribune/index'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,10 @@ const routes = [
     {
       path: '/permission',
       component: Permission
+    },
+    {
+      path: '/tribune',
+      component: Tribune
     }
     ]
   }
