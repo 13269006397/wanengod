@@ -49,6 +49,7 @@
         <el-table
           v-loading="ListLoading"
           :data="list"
+          max-height="460"
           ref="addUserRef"
           border
           stripe>

@@ -42,6 +42,16 @@ module.exports = {
         pathRewrite: {
           '^/api-user': ''
         }
+      },
+      '/api-edu': {
+        /* 目标代理服务器地址 */
+        target: 'http://localhost:9006/',
+        /* 允许跨域 */
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/api-edu': ''
+        }
       }
     }
   }

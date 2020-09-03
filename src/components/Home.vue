@@ -129,13 +129,13 @@
           <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>互联工具</span>
+              <span>欣酋教育</span>
             </template>
             <!--二级菜单-->
-            <el-menu-item index="5-1">
+            <el-menu-item index="/teacher">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>
-                <span>订单管理</span>
+                <span>讲师管理</span>
               </template>
             </el-menu-item>
             <el-menu-item index="5-2">

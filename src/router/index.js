@@ -7,6 +7,7 @@ import UserManager from '../components/UserManager'
 import SelfUserInfo from '../components/SelfUserInfo'
 import Permission from '../components/Permission'
 import Tribune from '../views/tribune/index'
+import Teacher from '../views/eduProject/teacher'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,10 @@ const routes = [
     {
       path: '/tribune',
       component: Tribune
+    },
+    {
+      path: '/teacher',
+      component: Teacher
     }
     ]
   }
