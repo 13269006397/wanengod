@@ -3,7 +3,7 @@
     <div class="login_box">
       <!--头像区-->
       <div class="avatar_box">
-        <img src="../assets/image/dianzanmao.jpg" alt="" />
+        <img :src=avatar alt="" />
       </div>
       <!--登录表单区域 - 验证码登录-->
       <el-form
@@ -98,19 +98,19 @@
           <el-button
             class="other_login"
             type="primary"
-            icon="el-icon-edit"
+            icon="iconfont icon-qq"
             circle
           ></el-button>
           <el-button
             class="other_login"
             type="success"
-            icon="el-icon-check"
+            icon="iconfont icon-weixin"
             circle
           ></el-button>
           <el-button
             class="other_login"
             type="warning"
-            icon="el-icon-message"
+            icon="iconfont icon-weibo"
             circle
           ></el-button>
         </el-form-item>
@@ -201,6 +201,7 @@ export default {
       AddLoading: false,
       checked: true,
       table1show: true,
+      avatar: undefined,
       table2show: false,
       isDisabled: false, // 控制按钮是否可以点击（false:可以点击，true:不可点击）
       dialogVisible: false, // 注册页面
@@ -264,18 +265,17 @@ export default {
   methods: {
     // 记住用户
     rememberUser () {
-      console.log(this.checked)
       // 判断复选框是否被勾选 勾选则调用配置cookie方法
       if (this.checked === true) {
         // 传入账号名，密码，和保存天数三个参数
-        this.setCookie(this.loginInfo.mobile, this.loginInfo.password, 7)
+        this.setCookie(this.loginInfo.mobile, this.loginInfo.password, this.avatar, 7)
       } else {
         // 清空Cookie
         this.clearCookie()
       }
     },
     // 设置cookie
-    setCookie (mobile, password, remeberTime) {
+    setCookie (mobile, password, avatar, remeberTime) {
       const exdate = new Date() // 获取时间
       exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * remeberTime) // 保存的天数
       // 字符串拼接cookie
@@ -283,6 +283,8 @@ export default {
         'mobile' + '=' + mobile + ';path=/;expires=' + exdate.toGMTString()
       window.document.cookie =
         'password' + '=' + password + ';path=/;expires=' + exdate.toGMTString()
+      window.document.cookie =
+        'avatar' + '=' + avatar + ';path=/;expires=' + exdate.toGMTString()
     },
     // 读取cookie
     getCookie: function () {
@@ -295,6 +297,8 @@ export default {
             this.loginInfo.mobile = arr2[1] // 保存到保存数据的地方
           } else if (arr2[0] === 'password') {
             this.loginInfo.password = arr2[1]
+          } else if (arr2[0] === 'avatar') {
+            this.avatar = arr2[1]
           }
         }
       }
@@ -389,6 +393,7 @@ export default {
           // 调用函数  传递参数 获取结果
           requestLogin(this.loginInfo).then(data => {
             if (data.code === 200) {
+              this.avatar = data.data.avatar
               // 记住用户
               this.rememberUser()
               this.LoginLoading = false
@@ -452,6 +457,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  @import url('//at.alicdn.com/t/font_2046038_w7aabli5fil.css');
   .login_container {
     background: url("../assets/image/login_bg.jpg") repeat;
     background-size: cover;

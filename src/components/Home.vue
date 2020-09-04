@@ -3,7 +3,7 @@
     <!--头部区-->
     <el-header>
       <div class="home-header">
-        <img src="../assets/image/home-logo.png" alt="">
+        <img src="../assets/image/logo1.png" alt="" style="width: 50px">
         <span class="home-header-span">欣酋科技 · 万物互联网</span>
       </div>
 
