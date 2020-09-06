@@ -831,6 +831,7 @@ export default {
         that.loading = 2
         that.$emit('crop-upload-success', resData.data)
       }).catch(err => {
+        // debugger
         if (that.value) {
           that.loading = 3
           that.hasError = true

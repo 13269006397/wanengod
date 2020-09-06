@@ -681,7 +681,6 @@ export default {
     // 修改角色信息
     updateUser () {
       this.$refs.updateUserModel.validate(valid => {
-        console.log(this.updateUserModel)
         if (valid) {
           updateUserStatus(this.updateUserModel).then(response => {
             if (response.code === 200) {
