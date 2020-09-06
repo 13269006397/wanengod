@@ -385,7 +385,7 @@ export default {
     // 关闭修改用户页面
     updateUserCancel () {
       this.updateUserVisible = false
-      this.updateUserModel = ''
+      this.updateUserModel.avatar = ''
       this.getParams()
     },
     // 打开修改用户页面
