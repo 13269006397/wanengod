@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Loading } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 import qs from 'qs'
@@ -46,6 +47,14 @@ export default function (
     dataType = 'json' // 请求的数据格式，默认 json , 可选 formData
   } = {}
 ) {
+  if (loading) {
+    var loadingInstance = Loading.service({
+      lock: true,
+      text,
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+  }
   // console.log('===========',dataType);
   // 发送 formData 数据格式
   if (dataType === 'formData') {
@@ -57,4 +66,13 @@ export default function (
 
     option.data = qs.stringify(option.data)
   }
+
+  return new Promise((resolve, reject) => {
+    service(option)
+      .then(resolve)
+      .catch(reject)
+      .finally(() => {
+        if (loading) loadingInstance.close()
+      })
+  })
 }
