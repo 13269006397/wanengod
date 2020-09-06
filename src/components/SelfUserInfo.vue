@@ -125,8 +125,38 @@
       title="修改用户"
       style="text-align: center"
       :visible.sync="updateUserVisible"
-      width="55%">
+      width="55%"
+      class="pub_dialog">
       <el-form :model="updateUserModel" status-icon :rules="rules" ref="updateUserModel" label-width="100px">
+        <el-row>
+          <el-col :span="22">
+            <el-form-item>
+              <!--头像略缩图-->
+              <pan-thumb :image="updateUserModel.avatar">
+                <!--上传按钮-->
+                <el-button
+                  type="primary"
+                  icon="el-icon-upload"
+                  @click="imageCropperShow = true"
+                >
+                  更换头像
+                </el-button>
+              </pan-thumb>
+              <image-cropper
+                v-show="imageCropperShow"
+                :width="300"
+                :height="300"
+                :key="imagecropperKey"
+                url="http://localhost:8022/api-user/user/upAvater"
+                field="file"
+                @close="close"
+                @crop-upload-success="cropSuccess"
+                @crop-upload-fail="cropFailed"
+              >
+              </image-cropper>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="手机号" prop="mobile">
@@ -146,8 +176,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="确认密码" prop="checkPass">
-              <el-input type="password" v-model="updateUserModel.checkPass" autocomplete="off" show-password></el-input>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="updateUserModel.email" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -189,20 +219,13 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="updateUserModel.email" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
             <el-form-item label="个性">
               <el-input v-model="updateUserModel.personality" maxlength="20" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="11">
             <el-form-item label="兴趣爱好">
-              <el-input v-model="updateUserModel.interest" type="textarea" maxlength="80" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+              <el-input v-model="updateUserModel.interest"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -218,8 +241,11 @@
 <script>
 import { findUserById, updateUserStatus } from '../api/api'
 import { formatDate } from '../utils/date'
+import PanThumb from '@/components/PanThumb/index'
+import ImageCropper from '@/components/ImageCropper'
 export default {
   name: 'SelfUserInfo',
+  components: { PanThumb, ImageCropper },
   filters: {
     sexFilter (value) {
       if (value) {
@@ -260,6 +286,8 @@ export default {
   },
   data () {
     return {
+      imagecropperKey: 0,
+      imageCropperShow: false,
       updateUserVisible: false,
       updateUserModel: {
         id: '',
@@ -325,6 +353,18 @@ export default {
     this.getParams()
   },
   methods: {
+    close () {
+      this.updateUserVisible = false
+      this.updateUserModel.avatar = undefined
+    },
+    cropSuccess (data) {
+      // 上传头像返回图片地址
+      this.updateUserModel.avatar = data.items
+      this.imageCropperShow = false
+    },
+    cropFailed (data) {
+      console.log('fail' + data)
+    },
     // 修改角色信息
     updateUser () {
       updateUserStatus(this.updateUserModel).then(response => {
@@ -372,7 +412,33 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.nikeName_user {
+<style lang="less">
+.pub_dialog {
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  overflow: hidden;
+  .el-dialog {
+    margin: 0 auto !important;
+    height: 85%;
+    overflow: hidden;
+    .el-dialog__body {
+      position: absolute;
+      left: 0;
+      top: 54px;
+      bottom: 0;
+      right: 0;
+      padding: 0;
+      z-index: 1;
+      overflow: hidden;
+      overflow-y: auto;
+    }
+    .el-dialog__footer {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 8888;
+    }
+  }
 }
 </style>
