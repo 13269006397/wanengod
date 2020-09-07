@@ -354,12 +354,13 @@ export default {
   },
   methods: {
     close () {
-      this.updateUserVisible = false
-      this.updateUserModel.avatar = undefined
+      this.imageCropperShow = false
+      this.imagecropperKey = this.imagecropperKey + 1
     },
     cropSuccess (data) {
       // 上传头像返回图片地址
       this.updateUserModel.avatar = data.items
+      this.imagecropperKey = this.imagecropperKey + 1
       this.imageCropperShow = false
     },
     cropFailed (data) {

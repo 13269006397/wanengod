@@ -403,12 +403,12 @@ export default {
     },
     close () {
       this.imageCropperShow = false
+      this.imagecropperKey = this.imagecropperKey + 1
     },
     cropSuccess (data) {
       // 上传头像返回图片地址
       this.updateTeacherModel.avatar = data.items
-      console.log(data)
-      console.log(this.updateTeacherModel.avatar)
+      this.imagecropperKey = this.imagecropperKey + 1
       this.imageCropperShow = false
     },
     cropFailed (data) {
