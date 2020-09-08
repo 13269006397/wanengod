@@ -484,7 +484,7 @@ export default {
     },
     // 讲师导出
     downloadExcel () {
-      axios.post('/api-user/easyExcel/writeExcel', this.requestParams, { responseType: 'blob' }).then((_res) => {
+      axios.post('/api-edu/easyExcel/writeExcel', this.requestParams, { responseType: 'blob' }).then((_res) => {
         // 将返回文件新建成为工作流
         const blob = new Blob([_res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
         const a = document.createElement('a')
