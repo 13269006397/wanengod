@@ -45,10 +45,21 @@
           >
         </el-col>
         <el-col :span="1.5">
-          <el-button type="danger" icon="el-icon-bottom" plain>导入</el-button>
-        </el-col>
+          <el-upload
+            class="upload-demo"
+            action="http://localhost:8022/api-edu/easyExcel/readExcel"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList">
+            <el-button type="danger" icon="el-icon-top" plain>导入</el-button>
+          </el-upload>
+      </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" icon="el-icon-top" plain @click="downloadExcel">导出</el-button>
+          <el-button type="warning" icon="el-icon-bottom" plain @click="downloadExcel">导出</el-button>
         </el-col>
       </el-row>
 
@@ -335,6 +346,7 @@ export default {
   },
   data () {
     return {
+      fileList: [],
       imagecropperKey: 0,
       imageCropperShow: false,
       updateTeacherVisible: false,
@@ -381,6 +393,18 @@ export default {
     this.getList()
   },
   methods: {
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    },
+    handleExceed (files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
     updateTeacher () {
       this.$refs.updateTeacherModel.validate(valid => {
         if (valid) {
