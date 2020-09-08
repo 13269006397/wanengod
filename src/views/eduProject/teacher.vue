@@ -48,7 +48,7 @@
           <el-button type="danger" icon="el-icon-bottom" plain>导入</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" icon="el-icon-top" plain>导出</el-button>
+          <el-button type="warning" icon="el-icon-top" plain @click="downloadExcel">导出</el-button>
         </el-col>
       </el-row>
 
@@ -296,6 +296,7 @@
 import { teacherList, updateTeacher, findTeacherById } from '@/api/eduProject/teacher'
 import { formatDate } from '@/utils/date'
 import PanThumb from '../../components/PanThumb/index'
+import axios from 'axios'
 import ImageCropper from '../../components/ImageCropper'
 export default {
   name: 'teacher',
@@ -479,6 +480,25 @@ export default {
             type: 'error'
           })
         }
+      })
+    },
+    // 讲师导出
+    downloadExcel () {
+      axios.post('/api-user/easyExcel/writeExcel', this.requestParams, { responseType: 'blob' }).then((_res) => {
+        // 将返回文件新建成为工作流
+        const blob = new Blob([_res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
+        const a = document.createElement('a')
+        // 生成文件路径
+        const href = window.URL.createObjectURL(blob)
+        a.href = href
+        const _fileName = _res.headers['content-disposition'].split(';')[1].split('=')[1]
+        // 文件名中有中文 则对文件名进行转码
+        a.download = decodeURIComponent(_fileName)
+        // 利用a标签做下载
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(href)
       })
     }
   }
