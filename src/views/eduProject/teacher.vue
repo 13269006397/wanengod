@@ -68,7 +68,7 @@
         v-loading="ListLoading"
         :data="list"
         ref="teacherRef"
-        max-height="460"
+        max-height="450"
         border
         stripe
       >

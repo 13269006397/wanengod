@@ -138,10 +138,10 @@
                 <span>讲师管理</span>
               </template>
             </el-menu-item>
-            <el-menu-item index="5-2">
+            <el-menu-item index="/courseManager">
               <template slot="title">
                 <i class="el-icon-s-check"></i>
-                <span>订单查询</span>
+                <span>课程分类</span>
               </template>
             </el-menu-item>
           </el-submenu>

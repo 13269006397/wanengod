@@ -8,6 +8,7 @@ import SelfUserInfo from '../components/SelfUserInfo'
 import Permission from '../components/Permission'
 import Tribune from '../views/tribune/index'
 import Teacher from '../views/eduProject/teacher'
+import CourseManager from '../views/eduProject/courseManager'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,10 @@ const routes = [
     {
       path: '/teacher',
       component: Teacher
+    },
+    {
+      path: '/courseManager',
+      component: CourseManager
     }
     ]
   }
