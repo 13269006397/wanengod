@@ -457,7 +457,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import url('//at.alicdn.com/t/font_2046038_w7aabli5fil.css');
+  @import url('//at.alicdn.com/t/font_2046038_zzqlop0onuf.css');
   .login_container {
     background: url("../assets/image/login_bg.jpg") repeat;
     background-size: cover;

@@ -117,19 +117,19 @@
           :collapse-transition = "false"
           router>
           <el-menu-item index="/welcome">
-            <i class="el-icon-truck"></i>
-            <span slot="title">驾驶机舱</span>
+            <i class="iconfont icon-shouye" style="color: white;font-size: 14px;margin-left: 7px"></i>
+            <span slot="title" style="margin-left: 10px">驾驶机舱</span>
           </el-menu-item>
 
           <el-menu-item index="/tribune">
-            <i class="el-icon-menu"></i>
-            <span slot="title">欣酋论坛</span>
+            <i class="iconfont icon-14" style="color: white;font-size: 14px;margin-left: 7px"></i>
+            <span style="margin-left: 10px">欣酋论坛</span>
           </el-menu-item>
 
           <el-submenu index="5">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>欣酋教育</span>
+              <i class="iconfont icon-jiaoyu1" style="color: white;font-size: 14px;margin-left: 7px"></i>
+              <span style="margin-left: 10px">欣酋教育</span>
             </template>
             <!--二级菜单-->
             <el-menu-item index="/teacher">
@@ -144,13 +144,19 @@
                 <span>课程分类</span>
               </template>
             </el-menu-item>
+            <el-menu-item index="/courseSubjectManager">
+              <template slot="title">
+                <i class="el-icon-s-check"></i>
+                <span>课程管理</span>
+              </template>
+            </el-menu-item>
           </el-submenu>
 
           <!--一级菜单-->
           <el-submenu index="6" v-if="this.permission === '01'">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <i class="iconfont icon-user" style="color: white;font-size: 14px;margin-left: 7px"></i>
+              <span style="margin-left: 10px">用户管理</span>
             </template>
             <!--二级菜单-->
             <el-menu-item index="/userManager">
@@ -278,7 +284,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+  @import url('//at.alicdn.com/t/font_2046038_g1pta9chyif.css');
   .el-header{
     background: url("../assets/image/home-header-bg.jpg") repeat;
     background-size: cover;
@@ -327,5 +334,9 @@ export default {
     text-align: center;
     letter-spacing: 0.2em;
     cursor: pointer;
+  }
+  .el-badge__content{
+    margin-top: 0px;
+    margin-right: 10px;
   }
 </style>

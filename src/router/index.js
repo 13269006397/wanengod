@@ -9,6 +9,7 @@ import Permission from '../components/Permission'
 import Tribune from '../views/tribune/index'
 import Teacher from '../views/eduProject/teacher'
 import CourseManager from '../views/eduProject/courseManager'
+import CourseSubjectManager from '../views/eduProject/courseSubjectManager'
 
 Vue.use(VueRouter)
 
@@ -52,8 +53,11 @@ const routes = [
     {
       path: '/courseManager',
       component: CourseManager
-    }
-    ]
+    },
+    {
+      path: '/courseSubjectManager',
+      component: CourseSubjectManager
+    }]
   }
 ]
 

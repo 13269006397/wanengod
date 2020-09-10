@@ -103,7 +103,7 @@
 
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="addSubjectVisible = false">取 消</el-button>
+            <el-button @click="subjectCancel">取 消</el-button>
             <el-button type="primary" @click="saveSubject">确 定</el-button>
           </span>
       </el-dialog>
@@ -222,6 +222,9 @@ export default {
     this.getSubjectTree()
   },
   methods: {
+    subjectCancel () {
+      this.addSubjectVisible = false
+    },
     saveSubject () {
       if (this.subject.level === '01' && this.subject.parentName === '顶节点') {
         this.subject.parentId = '0'
