@@ -224,6 +224,7 @@ export default {
   methods: {
     subjectCancel () {
       this.addSubjectVisible = false
+      this.subject = {}
     },
     saveSubject () {
       if (this.subject.level === '01' && this.subject.parentName === '顶节点') {

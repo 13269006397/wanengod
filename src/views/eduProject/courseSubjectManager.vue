@@ -158,14 +158,16 @@
 
     <!--新增课程-->
     <el-dialog
-      title="新增课程"
+      title="发布新课程"
       style="text-align: center"
       :visible.sync="addCourseView"
       width="55%"
       class="pub_dialog"
     >
+
+      <!--  1.基本信息  -->
       <el-form
-        :model="addCourseModel"
+        :model="addCourseData.addCourseModel"
         status-icon
         label-width="100px"
         ref="addCourseRef"
@@ -180,8 +182,39 @@
         </el-row>
         <el-row class="rowClass1">
           <el-col :span="11">
+            <el-form-item label="课程分类">
+              <el-select v-model="addCourseData.addCourseModel.subjectParentId" placeholder="一级分类" @change="getTwoSubject" clearable style="width: 100%;">
+                <el-option
+                  v-for="item in oneSubject"
+                  :key="item.title"
+                  :label="item.title"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="课程分类">
+              <el-select v-model="addCourseData.addCourseModel.subjectId" placeholder="二级分类" clearable style="width: 100%;">
+                <el-option
+                  v-for="item in twoSubject"
+                  :key="item.title"
+                  :label="item.title"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="课程标题">
+              <el-input v-model="addCourseData.addCourseModel.title" placeholder="示例: 机器学习课:从入门到放弃"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
             <el-form-item label="选择讲师">
-              <el-select v-model="addCourseModel.id" clearable style="width: 100%;">
+              <el-select v-model="addCourseData.addCourseModel.teacherId" clearable style="width: 100%;">
                 <el-option
                   v-for="item in teacherList"
                   :key="item.name"
@@ -191,23 +224,60 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="课程标题">
-              <el-input v-model="addCourseModel.title"></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="销售价格">
-              <el-input v-model="addCourseModel.price"></el-input>
+            <el-form-item label="课程封面">
+              <el-upload
+                class="avatar-uploader"
+                action="http://localhost:8022/api-user/user/upAvater"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">
+                <img v-if="addCourseData.addCourseModel.avatar" :src="addCourseData.addCourseModel.avatar" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="课程价格">
+              <el-input type="number" v-model="addCourseData.addCourseModel.price"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="总课时">
-              <el-input type="number" v-model="addCourseModel.lessonNum"></el-input>
+              <el-input type="number" v-model="addCourseData.addCourseModel.lessonNum"></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="是否发布">
+              <el-select
+                v-model="addCourseData.addCourseModel.status"
+                clearable
+                style="width: 100%;"
+              >
+                <el-option
+                  v-for="item in statusList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="22">
+              <el-form-item label="课程简介">
+                <el-input
+                  v-model="addCourseData.addCourseModel.description"
+                  type="textarea"
+                  maxlength="1000"
+                  :autosize="{ minRows: 3, maxRows: 5 }"
+                ></el-input>
+              </el-form-item>
+            </el-col>
         </el-row>
       </el-form>
 
@@ -301,6 +371,8 @@
 import { getCourseList } from '@/api/eduProject/courseManager'
 import { teacherList } from '@/api/eduProject/teacher'
 import { formatDate } from '@/utils/date'
+import { getOneSubjectList, getSubjectTree } from '@/api/eduProject/subject'
+
 import axios from 'axios'
 export default {
   name: 'teacher',
@@ -315,10 +387,10 @@ export default {
     },
     statusFilter (value) {
       if (value) {
-        if (value === 'Normal') {
+        if (value === '02') {
           value = '已发布'
         }
-        if (value === 'Draft') {
+        if (value === '01') {
           value = '未发布'
         }
       }
@@ -335,6 +407,8 @@ export default {
   },
   data () {
     return {
+      twoSubject: [],
+      oneSubject: [],
       active: 0,
       teacherList: [],
       fileList: [],
@@ -354,6 +428,33 @@ export default {
         gmtCreate: undefined,
         gmtModified: undefined
       },
+      // 后台传参
+      addCourseData: {
+        addCourseModel: {
+          title: undefined,
+          price: undefined,
+          teacherId: undefined,
+          lessonNum: undefined,
+          description: undefined,
+          subjectId: undefined,
+          subjectParentId: undefined,
+          status: undefined,
+          avatar: undefined,
+          isDeleted: undefined,
+          gmtCreate: undefined,
+          gmtModified: undefined
+        }
+      },
+      statusList: [
+        {
+          value: '01',
+          label: '暂不发布'
+        },
+        {
+          value: '02',
+          label: '立即发布'
+        }
+      ],
       ListLoading: false,
       list: [],
       total: undefined,
@@ -368,14 +469,61 @@ export default {
         name: '',
         page: 0,
         limit: 300
-      }
+      },
+      AllData: []
     }
   },
   created () {
     this.getList()
     this.getTeacherList()
+    this.OneSubjectList()
+    this.getSubjectTree()
   },
   methods: {
+    // 课程封面上传
+    handleAvatarSuccess (res, file) {
+      console.log(res)
+      // 赋值给页面字段
+      this.addCourseData.addCourseModel.avatar = res.data.items
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    // @change根据一级动态获取二级数据
+    getTwoSubject (value) {
+      // 一级subjectId值
+      for (let i = 0; i < this.AllData.length; i++) {
+        if (this.AllData[i].id === value) {
+          this.twoSubject = this.AllData[i].children
+          this.addCourseData.addCourseModel.subjectId = undefined
+        }
+      }
+    },
+    OneSubjectList () {
+      // 获得一级课程分类
+      getOneSubjectList().then(response => {
+        if (response.code === 200) {
+          this.oneSubject = response.data
+        }
+      })
+    },
+    getSubjectTree () {
+      // 获得课程分类树
+      getSubjectTree().then(response => {
+        if (response.code === 200) {
+          this.AllData = response.data
+        }
+      })
+    },
     // 获取讲师列表
     getTeacherList () {
       this.ListLoading = true
@@ -423,11 +571,11 @@ export default {
     cropFailed (data) {
       console.log('fail' + data)
     },
-    // 关闭修改用户页面
+    // 保存
     saveCourse () {
+      console.log(this.addCourseData)
       this.addCourseView = false
       this.$refs.addCourseRef.resetFields()
-      this.addCourseModel = {}
       this.active = 0
     },
     // 重置搜索 页面数据
@@ -501,7 +649,7 @@ export default {
     overflow: hidden;
     .el-dialog {
       margin: 0 auto !important;
-      height: 85%;
+      height: 90%;
       overflow: hidden;
       .el-dialog__body {
         position: absolute;
@@ -527,5 +675,31 @@ export default {
   }
   .rowClass1{
     margin-top: 50px;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 165px;
+    height: 165px;
+    line-height: 165px;
+    text-align: center;
+  }
+  .avatar {
+    width: 165px;
+    height: 165px;
+    display: block;
+  }
+  .el-textarea__inner{
+    margin-top: -15px;
   }
 </style>
