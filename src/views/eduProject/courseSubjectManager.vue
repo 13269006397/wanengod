@@ -27,7 +27,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button type="primary" icon="el-icon-search" @click="getList" plain
-          >搜索</el-button
+            >搜索</el-button
           >
         </el-col>
         <el-col :span="1.5">
@@ -36,12 +36,16 @@
             icon="el-icon-refresh-left"
             @click="restRequestParams"
             plain
-          >重置</el-button
+            >重置</el-button
           >
         </el-col>
         <el-col :span="1.5">
-          <el-button type="success" icon="el-icon-circle-plus-outline" plain @click="addCourseView = true"
-          >添加</el-button
+          <el-button
+            type="success"
+            icon="el-icon-circle-plus-outline"
+            plain
+            @click="addCourseView = true"
+            >添加</el-button
           >
         </el-col>
         <el-col :span="1.5">
@@ -54,12 +58,19 @@
             multiple
             :limit="3"
             :on-exceed="handleExceed"
-            :file-list="fileList">
+            :file-list="fileList"
+          >
             <el-button type="danger" icon="el-icon-top" plain>导入</el-button>
           </el-upload>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" icon="el-icon-bottom" plain @click="downloadExcel">导出</el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-bottom"
+            plain
+            @click="downloadExcel"
+            >导出</el-button
+          >
         </el-col>
       </el-row>
 
@@ -78,23 +89,35 @@
         <el-table-column type="index" label="序号"> </el-table-column>
         <el-table-column prop="id" label="课程id" width="180"></el-table-column>
         <!--<el-table-column prop="teacherId" label="课程讲师id" width="180"></el-table-column>-->
-        <el-table-column prop="name" label="课程讲师姓名" width="120px"></el-table-column>
+        <el-table-column
+          prop="name"
+          label="课程讲师姓名"
+          width="120px"
+        ></el-table-column>
         <!--<el-table-column prop="subjectId" label="课程专业id" width="180"></el-table-column>-->
         <!--<el-table-column prop="subjectName" label="二级课程专业" width="160px"></el-table-column>-->
         <!--<el-table-column prop="subjectParentId" label="课程专业父级id" width="200"></el-table-column>-->
         <!--<el-table-column prop="subjectParentName" label="一级课程专业" width="160px"></el-table-column>-->
         <el-table-column label="课程专业" width="200px">
           <template slot-scope="scope">
-            {{ scope.row.subjectParentName }}  -->  {{ scope.row.subjectName }}
+            {{ scope.row.subjectParentName }} --> {{ scope.row.subjectName }}
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="课程标题" width="200"></el-table-column>
+        <el-table-column
+          prop="title"
+          label="课程标题"
+          width="200"
+        ></el-table-column>
         <el-table-column label="课程销售价格" width="140px">
           <template slot-scope="scope">
             {{ scope.row.price | priceFilter }}
           </template>
         </el-table-column>
-        <el-table-column prop="lessonNum" label="总课时" width="100px"></el-table-column>
+        <el-table-column
+          prop="lessonNum"
+          label="总课时"
+          width="100px"
+        ></el-table-column>
         <el-table-column
           label="课程封面图片"
           class="itemColor"
@@ -109,8 +132,16 @@
             ></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="buyCount" label="销售数量" width="140px"></el-table-column>
-        <el-table-column prop="viewCount" label="浏览数量" width="140px"></el-table-column>
+        <el-table-column
+          prop="buyCount"
+          label="销售数量"
+          width="140px"
+        ></el-table-column>
+        <el-table-column
+          prop="viewCount"
+          label="浏览数量"
+          width="140px"
+        ></el-table-column>
         <el-table-column label="课程状态" width="140px">
           <template slot-scope="scope">
             {{ scope.row.status | statusFilter }}
@@ -164,14 +195,13 @@
       width="55%"
       class="pub_dialog"
     >
-
       <!--  1.基本信息  -->
       <el-form
         :model="addCourseData.addCourseModel"
         status-icon
         label-width="100px"
         ref="addCourseRef"
-        v-if="active===0"
+        v-if="active === 0"
       >
         <el-row class="rowClass">
           <el-steps :active="active" align-center finish-status="success">
@@ -183,24 +213,37 @@
         <el-row class="rowClass1">
           <el-col :span="11">
             <el-form-item label="课程分类">
-              <el-select v-model="addCourseData.addCourseModel.subjectParentId" placeholder="一级分类" @change="getTwoSubject" clearable style="width: 100%;">
+              <el-select
+                v-model="addCourseData.addCourseModel.subjectParentId"
+                placeholder="一级分类"
+                @change="getTwoSubject"
+                clearable
+                style="width: 100%;"
+              >
                 <el-option
                   v-for="item in oneSubject"
                   :key="item.title"
                   :label="item.title"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="课程分类">
-              <el-select v-model="addCourseData.addCourseModel.subjectId" placeholder="二级分类" clearable style="width: 100%;">
+              <el-select
+                v-model="addCourseData.addCourseModel.subjectId"
+                placeholder="二级分类"
+                clearable
+                style="width: 100%;"
+              >
                 <el-option
                   v-for="item in twoSubject"
                   :key="item.title"
                   :label="item.title"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -209,17 +252,25 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="课程标题">
-              <el-input v-model="addCourseData.addCourseModel.title" placeholder="示例: 机器学习课:从入门到放弃"></el-input>
+              <el-input
+                v-model="addCourseData.addCourseModel.title"
+                placeholder="示例: 机器学习课:从入门到放弃"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="选择讲师">
-              <el-select v-model="addCourseData.addCourseModel.teacherId" clearable style="width: 100%;">
+              <el-select
+                v-model="addCourseData.addCourseModel.teacherId"
+                clearable
+                style="width: 100%;"
+              >
                 <el-option
                   v-for="item in teacherList"
                   :key="item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -233,20 +284,31 @@
                 action="http://localhost:8022/api-user/user/upAvater"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="addCourseData.addCourseModel.avatar" :src="addCourseData.addCourseModel.avatar" class="avatar">
+                :before-upload="beforeAvatarUpload"
+              >
+                <img
+                  v-if="addCourseData.addCourseModel.cover"
+                  :src="addCourseData.addCourseModel.cover"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="课程价格">
-              <el-input type="number" v-model="addCourseData.addCourseModel.price"></el-input>
+              <el-input
+                type="number"
+                v-model="addCourseData.addCourseModel.price"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="总课时">
-              <el-input type="number" v-model="addCourseData.addCourseModel.lessonNum"></el-input>
+              <el-input
+                type="number"
+                v-model="addCourseData.addCourseModel.lessonNum"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -268,16 +330,16 @@
           </el-col>
         </el-row>
         <el-row>
-            <el-col :span="22">
-              <el-form-item label="课程简介">
-                <el-input
-                  v-model="addCourseData.addCourseModel.description"
-                  type="textarea"
-                  maxlength="1000"
-                  :autosize="{ minRows: 3, maxRows: 5 }"
-                ></el-input>
-              </el-form-item>
-            </el-col>
+          <el-col :span="22">
+            <el-form-item label="课程简介">
+              <el-input
+                v-model="addCourseData.addCourseModel.description"
+                type="textarea"
+                maxlength="1000"
+                :autosize="{ minRows: 3, maxRows: 5 }"
+              ></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
 
@@ -286,7 +348,7 @@
         status-icon
         label-width="100px"
         ref="addCourseRef"
-        v-if="active===1"
+        v-if="active === 1"
       >
         <el-row class="rowClass">
           <el-steps :active="active" align-center finish-status="success">
@@ -314,7 +376,7 @@
         status-icon
         label-width="100px"
         ref="addCourseRef"
-        v-if="active===2"
+        v-if="active === 2"
       >
         <el-row class="rowClass">
           <el-steps :active="active" align-center finish-status="success">
@@ -342,7 +404,7 @@
         status-icon
         label-width="100px"
         ref="addCourseRef"
-        v-if="active===3"
+        v-if="active === 3"
       >
         <el-row class="rowClass">
           <el-steps :active="active" align-center finish-status="success">
@@ -353,22 +415,29 @@
         </el-row>
         <el-row class="rowClass1">
           <span>
-              <h1> 新课程填写成功啦！!</h1>
-              <h3> 请点击保存 返回主界面！！</h3>
+            <h1>新课程填写成功啦！!</h1>
+            <h3>请点击保存 返回主界面！！</h3>
           </span>
         </el-row>
       </el-form>
 
       <span slot="footer" class="dialog-footer">
-        <el-button v-if="active===1 || active===2" style="margin-top: 12px;" @click="upNext">上一步</el-button>
-        <el-button v-if="active!==3" style="margin-top: 12px;" @click="next">下一步</el-button>
-        <el-button v-if="active===3" @click="saveCourse">保 存</el-button>
+        <el-button
+          v-if="active === 1 || active === 2"
+          style="margin-top: 12px;"
+          @click="upNext"
+          >上一步</el-button
+        >
+        <el-button v-if="active !== 3" style="margin-top: 12px;" @click="next"
+          >下一步</el-button
+        >
+        <el-button v-if="active === 3" @click="saveCourse">保 存</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getCourseList } from '@/api/eduProject/courseManager'
+import { getCourseList, saveCoreseBase } from '@/api/eduProject/courseManager'
 import { teacherList } from '@/api/eduProject/teacher'
 import { formatDate } from '@/utils/date'
 import { getOneSubjectList, getSubjectTree } from '@/api/eduProject/subject'
@@ -439,7 +508,7 @@ export default {
           subjectId: undefined,
           subjectParentId: undefined,
           status: undefined,
-          avatar: undefined,
+          cover: undefined,
           isDeleted: undefined,
           gmtCreate: undefined,
           gmtModified: undefined
@@ -484,7 +553,7 @@ export default {
     handleAvatarSuccess (res, file) {
       console.log(res)
       // 赋值给页面字段
-      this.addCourseData.addCourseModel.avatar = res.data.items
+      this.addCourseData.addCourseModel.cover = res.data.items
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -557,7 +626,11 @@ export default {
       console.log(file)
     },
     handleExceed (files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      )
     },
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
@@ -574,9 +647,24 @@ export default {
     // 保存
     saveCourse () {
       console.log(this.addCourseData)
-      this.addCourseView = false
       this.$refs.addCourseRef.resetFields()
       this.active = 0
+      saveCoreseBase(this.addCourseData).then(data => {
+        if (data.code === 200) {
+          this.getList()
+          this.addCourseView = false
+          this.$message({
+            message: data.msg,
+            type: 'success'
+          })
+        } else {
+          this.ListLoading = false
+          this.$message({
+            message: data.msg,
+            type: 'error'
+          })
+        }
+      })
     },
     // 重置搜索 页面数据
     restRequestParams () {
@@ -612,94 +700,102 @@ export default {
     },
     // 讲师导出
     downloadExcel () {
-      axios.post('/api-edu/easyExcel/writeExcel', this.requestParams, { responseType: 'blob' }).then((_res) => {
-        // 将返回文件新建成为工作流
-        const blob = new Blob([_res.data], { type: 'application/vnd.ms-excel;charset=utf-8' })
-        const a = document.createElement('a')
-        // 生成文件路径
-        const href = window.URL.createObjectURL(blob)
-        a.href = href
-        const _fileName = _res.headers['content-disposition'].split(';')[1].split('=')[1]
-        // 文件名中有中文 则对文件名进行转码
-        a.download = decodeURIComponent(_fileName)
-        // 利用a标签做下载
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        window.URL.revokeObjectURL(href)
-      })
+      axios
+        .post('/api-edu/easyExcel/writeExcel', this.requestParams, {
+          responseType: 'blob'
+        })
+        .then(_res => {
+          // 将返回文件新建成为工作流
+          const blob = new Blob([_res.data], {
+            type: 'application/vnd.ms-excel;charset=utf-8'
+          })
+          const a = document.createElement('a')
+          // 生成文件路径
+          const href = window.URL.createObjectURL(blob)
+          a.href = href
+          const _fileName = _res.headers['content-disposition']
+            .split(';')[1]
+            .split('=')[1]
+          // 文件名中有中文 则对文件名进行转码
+          a.download = decodeURIComponent(_fileName)
+          // 利用a标签做下载
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          window.URL.revokeObjectURL(href)
+        })
     }
   }
 }
 </script>
 
 <style lang="less">
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
-  .itemColor .el-form-item__label {
-    color: #0086b3;
-  }
-  .pub_dialog {
-    display: flex;
-    justify-content: center;
-    align-items: Center;
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.itemColor .el-form-item__label {
+  color: #0086b3;
+}
+.pub_dialog {
+  display: flex;
+  justify-content: center;
+  align-items: Center;
+  overflow: hidden;
+  .el-dialog {
+    margin: 0 auto !important;
+    height: 90%;
     overflow: hidden;
-    .el-dialog {
-      margin: 0 auto !important;
-      height: 90%;
+    .el-dialog__body {
+      position: absolute;
+      left: 0;
+      top: 54px;
+      bottom: 0;
+      right: 0;
+      padding: 0;
+      z-index: 1;
       overflow: hidden;
-      .el-dialog__body {
-        position: absolute;
-        left: 0;
-        top: 54px;
-        bottom: 0;
-        right: 0;
-        padding: 0;
-        z-index: 1;
-        overflow: hidden;
-        overflow-y: auto;
-      }
-      .el-dialog__footer {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        z-index: 8888;
-      }
+      overflow-y: auto;
+    }
+    .el-dialog__footer {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 8888;
     }
   }
-  .rowClass{
-    margin-top: 40px;
-  }
-  .rowClass1{
-    margin-top: 50px;
-  }
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 165px;
-    height: 165px;
-    line-height: 165px;
-    text-align: center;
-  }
-  .avatar {
-    width: 165px;
-    height: 165px;
-    display: block;
-  }
-  .el-textarea__inner{
-    margin-top: -15px;
-  }
+}
+.rowClass {
+  margin-top: 40px;
+}
+.rowClass1 {
+  margin-top: 50px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 165px;
+  height: 165px;
+  line-height: 165px;
+  text-align: center;
+}
+.avatar {
+  width: 165px;
+  height: 165px;
+  display: block;
+}
+.el-textarea__inner {
+  margin-top: -15px;
+}
 </style>

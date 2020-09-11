@@ -10,3 +10,10 @@ export const getCourseList = params => {
     .post('/api-edu/course/courseList', JSON.stringify(params))
     .then(res => res.data)
 }
+
+// 保存课程信息
+export const saveCoreseBase = params => {
+  return axios
+    .post('/api-edu/course/addCuorse', JSON.stringify(params))
+    .then(res => res.data)
+}
