@@ -330,14 +330,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="22">
+          <el-col :span="21">
             <el-form-item label="课程简介">
-              <el-input
-                v-model="addCourseData.addCourseModel.description"
-                type="textarea"
-                maxlength="1000"
-                :autosize="{ minRows: 3, maxRows: 5 }"
-              ></el-input>
+              <quill-editor v-model="addCourseData.addCourseModel.description"></quill-editor>
             </el-form-item>
           </el-col>
         </el-row>

@@ -11,6 +11,16 @@ import './assets/icon/iconfont.css'
 import axios from 'axios'
 //  引入echarts
 import echarts from 'echarts'
+// 引入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+// require styles 富文本编辑器对应的样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+// 注册富文本编辑器组件为全局组件
+Vue.use(VueQuillEditor)
+
 Vue.prototype.$echarts = echarts
 
 // 请求头增加Token数据 调后台接口做对比
