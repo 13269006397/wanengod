@@ -352,18 +352,20 @@
             <el-step title="填写小节信息"></el-step>
           </el-steps>
         </el-row>
-        <el-row class="rowClass1">
-          <el-col :span="11">
-            <el-form-item label="22">
-              <el-input v-model="addCourseModel.title"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="22">
-              <el-input v-model="addCourseModel.title"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <ul>
+          <li>
+            第一章
+           <ul>
+             <li>第一节</li>
+             <li>第二节</li>
+           </ul>
+          </li>
+
+          <li>
+            第二章
+          </li>
+        </ul>
+
       </el-form>
 
       <el-form
@@ -436,6 +438,7 @@ import { getCourseList, saveCoreseBase } from '@/api/eduProject/courseManager'
 import { teacherList } from '@/api/eduProject/teacher'
 import { formatDate } from '@/utils/date'
 import { getOneSubjectList, getSubjectTree } from '@/api/eduProject/subject'
+import { getChapterList } from '@/api/eduProject/chapter'
 
 import axios from 'axios'
 export default {
@@ -534,7 +537,11 @@ export default {
         page: 0,
         limit: 300
       },
-      AllData: []
+      AllData: [],
+      chapter: [],
+      chapterParams: {
+        courseId: '18'
+      }
     }
   },
   created () {
@@ -542,8 +549,17 @@ export default {
     this.getTeacherList()
     this.OneSubjectList()
     this.getSubjectTree()
+    this.getChapterList()
   },
   methods: {
+    getChapterList () {
+      // 获得 章节小节树
+      getChapterList(this.chapterParams).then(response => {
+        if (response.code === 200) {
+          this.chapter = response.data
+        }
+      })
+    },
     // 课程封面上传
     handleAvatarSuccess (res, file) {
       console.log(res)
