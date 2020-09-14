@@ -207,11 +207,11 @@
           <el-steps :active="active" align-center finish-status="success">
             <el-step title="填写课程基本信息"></el-step>
             <el-step title="填写课程大纲"></el-step>
-            <el-step title="填写小节信息"></el-step>
+            <el-step title="课程息确认"></el-step>
           </el-steps>
         </el-row>
         <el-row class="rowClass1">
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="课程分类">
               <el-select
                 v-model="addCourseData.addCourseModel.subjectParentId"
@@ -230,7 +230,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="课程分类">
               <el-select
                 v-model="addCourseData.addCourseModel.subjectId"
@@ -248,9 +248,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="课程标题">
               <el-input
                 v-model="addCourseData.addCourseModel.title"
@@ -258,7 +256,9 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+        </el-row>
+        <el-row>
+          <el-col :span="7">
             <el-form-item label="选择讲师">
               <el-select
                 v-model="addCourseData.addCourseModel.teacherId"
@@ -275,9 +275,30 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="7">
+            <el-form-item label="课程价格">
+              <el-input
+                type="number"
+                v-model="addCourseData.addCourseModel.price"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="总课时">
+              <el-input
+                type="number"
+                v-model="addCourseData.addCourseModel.lessonNum"
+              ></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="14">
+            <el-form-item label="课程简介">
+              <quill-editor v-model="addCourseData.addCourseModel.description"></quill-editor>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
             <el-form-item label="课程封面">
               <el-upload
                 class="avatar-uploader"
@@ -295,23 +316,7 @@
               </el-upload>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="课程价格">
-              <el-input
-                type="number"
-                v-model="addCourseData.addCourseModel.price"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="总课时">
-              <el-input
-                type="number"
-                v-model="addCourseData.addCourseModel.lessonNum"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="是否发布">
               <el-select
                 v-model="addCourseData.addCourseModel.status"
@@ -329,17 +334,11 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="21">
-            <el-form-item label="课程简介">
-              <quill-editor v-model="addCourseData.addCourseModel.description"></quill-editor>
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
 
+      <!--第二部分d-->
       <el-form
-        :model="addCourseModel"
+        :model="addCourseData.addCourseModel"
         status-icon
         label-width="100px"
         ref="addCourseRef"
@@ -349,22 +348,23 @@
           <el-steps :active="active" align-center finish-status="success">
             <el-step title="填写课程基本信息"></el-step>
             <el-step title="填写课程大纲"></el-step>
-            <el-step title="填写小节信息"></el-step>
+            <el-step title="课程息确认"></el-step>
           </el-steps>
         </el-row>
-        <ul>
-          <li>
-            第一章
-           <ul>
-             <li>第一节</li>
-             <li>第二节</li>
-           </ul>
-          </li>
 
-          <li>
-            第二章
-          </li>
-        </ul>
+        <el-row>
+          <ul class="chanpterList">
+            <li v-for="chapter in chapterList" :key="chapter.id" >
+              {{chapter.title}}
+              <ul class="videoList">
+                <li v-for="video in chapter.children" :key="video.id" >
+                  {{video.title}}
+                </li>
+              </ul>
+            </li>
+
+          </ul>
+        </el-row>
 
       </el-form>
 
@@ -379,7 +379,7 @@
           <el-steps :active="active" align-center finish-status="success">
             <el-step title="填写课程基本信息"></el-step>
             <el-step title="填写课程大纲"></el-step>
-            <el-step title="填写小节信息"></el-step>
+            <el-step title="课程息确认"></el-step>
           </el-steps>
         </el-row>
         <el-row class="rowClass1">
@@ -407,7 +407,7 @@
           <el-steps :active="active" align-center finish-status="success">
             <el-step title="填写课程基本信息"></el-step>
             <el-step title="填写课程大纲"></el-step>
-            <el-step title="填写小节信息"></el-step>
+            <el-step title="课程息确认"></el-step>
           </el-steps>
         </el-row>
         <el-row class="rowClass1">
@@ -538,7 +538,7 @@ export default {
         limit: 300
       },
       AllData: [],
-      chapter: [],
+      chapterList: [],
       chapterParams: {
         courseId: '18'
       }
@@ -556,7 +556,7 @@ export default {
       // 获得 章节小节树
       getChapterList(this.chapterParams).then(response => {
         if (response.code === 200) {
-          this.chapter = response.data
+          this.chapterList = response.data
         }
       })
     },
@@ -657,10 +657,10 @@ export default {
     },
     // 保存
     saveCourse () {
-      console.log(this.addCourseData)
       this.$refs.addCourseRef.resetFields()
       this.active = 0
-      saveCoreseBase(this.addCourseData).then(data => {
+      this.addCourseView = false
+      /* saveCoreseBase(this.addCourseData).then(data => {
         if (data.code === 200) {
           this.getList()
           this.addCourseView = false
@@ -675,7 +675,7 @@ export default {
             type: 'error'
           })
         }
-      })
+      }) */
     },
     // 重置搜索 页面数据
     restRequestParams () {
@@ -796,9 +796,9 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 165px;
-  height: 165px;
-  line-height: 165px;
+  width: 145px;
+  height: 145px;
+  line-height: 145px;
   text-align: center;
 }
 .avatar {
@@ -808,5 +808,10 @@ export default {
 }
 .el-textarea__inner {
   margin-top: -15px;
+}
+.chanpterList{
+  text-align: left;
+  }
+.videoList{
 }
 </style>
