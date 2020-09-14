@@ -660,7 +660,7 @@ export default {
       this.$refs.addCourseRef.resetFields()
       this.active = 0
       this.addCourseView = false
-      /* saveCoreseBase(this.addCourseData).then(data => {
+      saveCoreseBase(this.addCourseData).then(data => {
         if (data.code === 200) {
           this.getList()
           this.addCourseView = false
@@ -675,7 +675,7 @@ export default {
             type: 'error'
           })
         }
-      }) */
+      })
     },
     // 重置搜索 页面数据
     restRequestParams () {
